@@ -8,6 +8,13 @@ export default defineConfig({
     baseURL: 'http://localhost:3000',
     trace: 'on',
   },
+  webServer: {
+    command: 'npm start',
+    cwd: '../test-repo/rolnopol',
+    url: 'http://localhost:3000',
+    reuseExistingServer: true,
+    timeout: 120_000,
+  },
   projects: [
     {
       name: 'chromium',
