@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("shows title and welcome heading", async ({ page }) => {
+test("displays the Rolnopol page title and welcome heading", async ({ page }) => {
   await page.goto("/");
 
   await expect(page).toHaveTitle(/Rolnopol/);
