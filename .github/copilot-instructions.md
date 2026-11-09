@@ -27,3 +27,8 @@ fix(pages): use role-based locator for login button
 chore(deps): bump @playwright/test to 1.48.0
 docs(github): add conventional commit instructions
 ```
+
+## Test Plan and Tagging System
+
+- When creating or updating Playwright tests, add the appropriate `@smoke`, `@api`, `@ui`, `@e2e`, or `@flag` tag as defined in the [test plan](../docs/test-plan.md#test-approach).
+- Keep the tag guidance in the test plan and this reference synchronized whenever the available tags or their usage change.
