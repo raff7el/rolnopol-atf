@@ -41,3 +41,9 @@ Structure every Playwright test body with `// Arrange`, `// Act`, and `// Assert
 - **Act**: the single action under test, such as a submit click or a `page.goto` when loading the page is itself the behavior under test.
 - **Assert**: all expectations, including awaiting promises set up in Arrange and checking their results.
 - Omit `// Arrange` when there is no setup (e.g. smoke tests whose only step is navigation).
+
+## Page Objects
+
+- Page Objects (`pages/*.page.ts`) expose locators, navigation, and actions only. Never include assertions in them: no `expect`, no `import { expect }`, and no `verify*`/`assert*`/`should*` helpers.
+- Keep all verifications in the test files (`tests/*.spec.ts`), under the `// Assert` block.
+- To support an assertion, return the value the test needs (e.g. a `Locator` or a `Promise<Response>`) and let the test check it.
