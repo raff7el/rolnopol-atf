@@ -47,3 +47,4 @@ Structure every Playwright test body with `// Arrange`, `// Act`, and `// Assert
 - Page Objects (`src/pages/*.page.ts`) expose locators, navigation, and actions only. Never include assertions in them: no `expect`, no `import { expect }`, and no `verify*`/`assert*`/`should*` helpers.
 - Keep all verifications in the test files (`tests/*.spec.ts`), under the `// Assert` block.
 - To support an assertion, return the value the test needs (e.g. a `Locator` or a `Promise<Response>`) and let the test check it.
+- Follow the full Page Object conventions in [coding standards](../docs/coding-standards.md#page-object-pattern).
