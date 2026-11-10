@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { RegisterPage } from "../pages/register.page";
 
 test(
   "registers a new user and redirects to the login page",
@@ -6,20 +7,20 @@ test(
   async ({ page }) => {
     // Arrange
     test.setTimeout(20_000);
+    const registerPage = new RegisterPage(page);
     const email = `autotest_${Date.now()}@example.com`;
 
-    await page.goto("/register.html");
-    await page.getByTestId("email-input").fill(email);
-    await page.getByTestId("display-name-input").fill("Tester");
-    await page.getByTestId("password-input").fill("Test123!");
+    await registerPage.goto();
+    await registerPage.fillForm({
+      email,
+      displayName: "Tester",
+      password: "Test123!",
+    });
 
-    const responsePromise = page.waitForResponse(
-      (r) =>
-        r.url().endsWith("/api/v1/register") && r.request().method() === "POST",
-    );
+    const responsePromise = registerPage.waitForRegisterResponse();
 
     // Act
-    await page.getByTestId("register-submit-btn").click();
+    await registerPage.submit();
 
     // Assert
     const response = await responsePromise;
@@ -28,9 +29,7 @@ test(
     expect(body.success).toBe(true);
     expect(body.data.user.email).toBe(email);
 
-    const successBanner = page.getByRole("alert").filter({
-      has: page.getByText("Registration successful!", { exact: true }),
-    });
+    const successBanner = registerPage.notification("Registration successful!");
     await expect(successBanner).toBeVisible();
     await expect(successBanner).toHaveClass(/\bsuccess\b/);
     await expect(successBanner.locator(".notification-title")).toHaveText(
