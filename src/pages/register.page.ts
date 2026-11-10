@@ -1,4 +1,5 @@
 import { type Locator, type Page, type Response } from "@playwright/test";
+import { BasePage } from "./base.page";
 
 export interface RegistrationData {
   email: string;
@@ -6,22 +7,21 @@ export interface RegistrationData {
   password: string;
 }
 
-export class RegisterPage {
+export class RegisterPage extends BasePage {
   readonly url = "/register.html";
+  readonly form: Locator;
   readonly emailInput: Locator;
   readonly displayNameInput: Locator;
   readonly passwordInput: Locator;
   readonly submitButton: Locator;
 
-  constructor(private readonly page: Page) {
+  constructor(page: Page) {
+    super(page);
+    this.form = page.getByTestId("register-form");
     this.emailInput = page.getByTestId("email-input");
     this.displayNameInput = page.getByTestId("display-name-input");
     this.passwordInput = page.getByTestId("password-input");
     this.submitButton = page.getByTestId("register-submit-btn");
-  }
-
-  async goto(): Promise<void> {
-    await this.page.goto(this.url);
   }
 
   async fillForm({
@@ -49,5 +49,13 @@ export class RegisterPage {
     return this.page.getByRole("alert").filter({
       has: this.page.getByText(message, { exact: true }),
     });
+  }
+
+  notificationTitle(message: string): Locator {
+    return this.notification(message).locator(".notification-title");
+  }
+
+  notificationMessage(message: string): Locator {
+    return this.notification(message).locator(".notification-message");
   }
 }

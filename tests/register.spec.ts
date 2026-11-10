@@ -29,14 +29,15 @@ test(
     expect(body.success).toBe(true);
     expect(body.data.user.email).toBe(email);
 
-    const successBanner = registerPage.notification("Registration successful!");
+    const successMessage = "Registration successful!";
+    const successBanner = registerPage.notification(successMessage);
     await expect(successBanner).toBeVisible();
     await expect(successBanner).toHaveClass(/\bsuccess\b/);
-    await expect(successBanner.locator(".notification-title")).toHaveText(
+    await expect(registerPage.notificationTitle(successMessage)).toHaveText(
       "Success",
     );
-    await expect(successBanner.locator(".notification-message")).toHaveText(
-      "Registration successful!",
+    await expect(registerPage.notificationMessage(successMessage)).toHaveText(
+      successMessage,
     );
 
     await expect(page).toHaveURL(/\/login\.html$/, { timeout: 10_000 });
