@@ -32,3 +32,12 @@ docs(github): add conventional commit instructions
 
 - When creating or updating Playwright tests, add the appropriate `@smoke`, `@api`, `@ui`, `@e2e`, or `@flag` tag as defined in the [test plan](../docs/test-plan.md#test-approach).
 - Keep the tag guidance in the test plan and this reference synchronized whenever the available tags or their usage change.
+
+## Test Structure (Arrange / Act / Assert)
+
+Structure every Playwright test body with `// Arrange`, `// Act`, and `// Assert` comments, each followed by its block and separated by a blank line.
+
+- **Arrange**: test setup, such as timeouts, test data, navigation to the starting page, form filling, and response/event listeners (e.g. `page.waitForResponse`) that must be registered before the action.
+- **Act**: the single action under test, such as a submit click or a `page.goto` when loading the page is itself the behavior under test.
+- **Assert**: all expectations, including awaiting promises set up in Arrange and checking their results.
+- Omit `// Arrange` when there is no setup (e.g. smoke tests whose only step is navigation).
