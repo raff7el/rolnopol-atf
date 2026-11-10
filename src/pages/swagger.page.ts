@@ -1,8 +1,9 @@
-import { type Locator, type Page } from "@playwright/test";
+﻿import { type Locator, type Page } from "@playwright/test";
+import { PAGE_URLS } from "../constants/pageurls";
 import { BasePage } from "./base.page";
 
 export class SwaggerPage extends BasePage {
-  readonly url = "/swagger.html";
+  readonly url = PAGE_URLS.swagger;
   readonly apiDocsFrame: Locator;
   readonly swaggerUi: Locator;
 

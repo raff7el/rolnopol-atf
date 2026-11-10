@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { PAGE_URLS } from "../src/constants/pageurls";
 import { RegisterPage } from "../src/pages/register.page";
 
 test(
@@ -40,6 +41,6 @@ test(
       successMessage,
     );
 
-    await expect(page).toHaveURL(/\/login\.html$/, { timeout: 10_000 });
+    await expect(page).toHaveURL(PAGE_URLS.login, { timeout: 10_000 });
   },
 );

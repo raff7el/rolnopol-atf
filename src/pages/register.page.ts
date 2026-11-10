@@ -1,4 +1,6 @@
-import { type Locator, type Page, type Response } from "@playwright/test";
+﻿import { type Locator, type Page, type Response } from "@playwright/test";
+import { API_URLS } from "../config/urls";
+import { PAGE_URLS } from "../constants/pageurls";
 import { BasePage } from "./base.page";
 
 export interface RegistrationData {
@@ -8,7 +10,7 @@ export interface RegistrationData {
 }
 
 export class RegisterPage extends BasePage {
-  readonly url = "/register.html";
+  readonly url = PAGE_URLS.register;
   readonly form: Locator;
   readonly emailInput: Locator;
   readonly displayNameInput: Locator;
@@ -41,7 +43,7 @@ export class RegisterPage extends BasePage {
   waitForRegisterResponse(): Promise<Response> {
     return this.page.waitForResponse(
       (r) =>
-        r.url().endsWith("/api/v1/register") && r.request().method() === "POST",
+        r.url().endsWith(API_URLS.register) && r.request().method() === "POST",
     );
   }
 
