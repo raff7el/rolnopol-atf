@@ -1,5 +1,10 @@
 # Copilot Instructions
 
+## CLI Agent Delegation
+
+- Delegate suitable implementation work to the Copilot CLI agent, giving it the relevant repository context, scope, and acceptance criteria.
+- Review delegated changes and independently validate their behavior before accepting them.
+
 ## Commit Messages
 
 Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
