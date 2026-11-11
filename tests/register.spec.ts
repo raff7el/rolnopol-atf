@@ -4,7 +4,7 @@ import { RegisterPage } from "../src/pages/register.page";
 
 test(
   "registers a new user and redirects to the login page",
-  { tag: "@e2e" },
+  { tag: "@ui" },
   async ({ page }) => {
     // Arrange
     test.setTimeout(20_000);
