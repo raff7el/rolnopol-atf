@@ -1,4 +1,9 @@
-﻿import { type Locator, type Page, type Response } from "@playwright/test";
+﻿import {
+  type Locator,
+  type Page,
+  type Request,
+  type Response,
+} from "@playwright/test";
 import { API_URLS } from "../config/urls";
 import { PAGE_URLS } from "../constants/pageurls";
 import { BasePage } from "./base.page";
@@ -45,6 +50,23 @@ export class RegisterPage extends BasePage {
       (r) =>
         r.url().endsWith(API_URLS.register) && r.request().method() === "POST",
     );
+  }
+
+  /**
+   * Starts recording every request sent to the register endpoint.
+   * Returns the live array, so the test can check it after the action.
+   */
+  recordRegisterRequests(): Request[] {
+    const requests: Request[] = [];
+    this.page.on("request", (r) => {
+      if (r.url().endsWith(API_URLS.register)) requests.push(r);
+    });
+    return requests;
+  }
+
+  /** Inline validation message shown under the given form field. */
+  fieldError(field: Locator): Locator {
+    return this.form.locator(".form-group", { has: field }).getByRole("alert");
   }
 
   notification(message: string): Locator {

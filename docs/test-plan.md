@@ -1,6 +1,6 @@
 # Rolnopol – Test Plan
 
-As of 2026-11-09 · Source: [Rolnopol documentation](http://localhost:3000/docs.html)
+As of 2026-11-11 · Source: [Rolnopol documentation](http://localhost:3000/docs.html)
 
 ## Scope
 
@@ -39,11 +39,11 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 
 ## Test scenarios
 
-40 scenarios across 7 areas; P1 runs on every commit, P2 nightly, P3 weekly. Expected results come straight from the documentation.
+46 scenarios across 7 areas; P1 runs on every commit, P2 nightly, P3 weekly. Expected results come straight from the documentation.
 
 | ID | Area | Scenario | Expected result | Priority | Tags |
 | --- | --- | --- | --- | --- | --- |
-| AUTH-01 | Auth | Register with unique email, display name and password | Account created, user logged in and redirected | P1 | `@ui` |
+| AUTH-01 | Auth | Register with unique email, display name and password | 201 from `POST /api/v1/register`; "Registration successful!" notification; redirect to `/login.html` (user is not logged in automatically) | P1 | `@ui` |
 | AUTH-02 | Auth | Register with an email that already exists | 409 "User with this email already exists" | P1 | `@api` |
 | AUTH-03 | Auth | Register with invalid or missing fields | 400 "Validation failed: ..." | P2 | `@api` |
 | AUTH-04 | Auth | Log in with demo@example.com / demo123 | Token returned; cookies `rolnopolToken` and `rolnopolLoginTime` set; redirect to `/profile.html` | P1 | `@smoke` |
@@ -53,6 +53,12 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 | AUTH-08 | Auth | Log out | Auth cookies cleared, old token no longer accepted | P1 | `@ui` |
 | AUTH-09 | Auth | Repeat failed logins quickly | Rate limit kicks in | P3 | `@api` |
 | AUTH-10 | Auth | Farmer tries to open admin or superadmin features | Access denied | P1 | `@ui` |
+| AUTH-11 | Auth | Submit the registration form with email or password left empty | Browser blocks submit (`required`); no `POST /api/v1/register`; user stays on `/register.html` | P2 | `@ui` |
+| AUTH-12 | Auth | Register with an email the browser accepts but the app rejects (e.g. `a@b`) | Inline error "Please enter a valid email address"; no request sent | P2 | `@ui` |
+| AUTH-13 | Auth | Register with a 2-character password | Inline error "Password must be at least 3 characters"; no request sent | P2 | `@ui` |
+| AUTH-14 | Auth | Register with a display name containing disallowed characters (e.g. `John@Doe!`) | Inline error "Display name can only contain letters, numbers, spaces, hyphens, and underscores"; field marked invalid; no request sent; no redirect | P1 | `@ui` |
+| AUTH-15 | Auth | Register with a display name of 2 characters, then 25 characters | 2: inline error "Display name must be at least 3 characters", no request; 25: input cut to 20 by `maxlength`, registration succeeds | P3 | `@ui` |
+| AUTH-16 | Auth | Register in the UI with an email that already exists | Error notification "User with this email already exists" (409); user stays on `/register.html` | P1 | `@ui` |
 | FARM-01 | Farm | Add a field with name and area | Field appears in the farm overview | P1 | `@ui` |
 | FARM-02 | Farm | Edit and remove a field | Changes saved and reflected | P2 | `@ui` |
 | FARM-03 | Farm | Add animals with type and amount, assign to a field | Animal listed with its fieldId | P1 | `@ui` |
@@ -71,7 +77,7 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 | FIN-02 | Finance | Transfer funds to another user | Sender expense, receiver income, balances updated | P1 | `@e2e` |
 | FIN-03 | Finance | Transfer more than the balance | Rejected, balance unchanged | P1 | `@api` |
 | SYS-01 | System | `GET /api/v1/healthcheck` | Healthy status incl. database | P1 | `@smoke @api` |
-| SYS-02 | System | Open `/docs.html` and `/swagger.html` | Docs and Swagger load without errors | P3 | `@ui` |
+| SYS-02 | System | Open key pages: `/`, `/login.html`, `/register.html`, `/docs.html`, `/swagger.html` | Each returns 200, has the right title and shows its main content | P1 | `@smoke` |
 | FF-01 | Alerts | `alertsEnabled` on, then off | On: page, nav link and `GET /alerts` work; off: nav hidden, API 404 | P2 | `@flag` |
 | FF-02 | Alerts | Severity filter on and off | Dropdown filters by level; hidden and cleared when off | P3 | `@flag` |
 | FF-03 | Contact | Submit valid form; then turn flag off | Confirmation shown; off: notice shown, `POST /api/contact` 404 | P2 | `@flag` |
@@ -83,6 +89,16 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 | FF-09 | WebMCP | Call a tool with an expired session or bad input | `not_authenticated` or `invalid_input`, no redirect | P3 | `@flag` |
 | E2E-01 | End-to-end | Register, then set up a farm with field, animals and staff | All resources shown in the farm overview | P1 | `@e2e` |
 | E2E-02 | End-to-end | User A sells a field, User B buys it | Ownership and both balances updated | P1 | `@e2e` |
+
+## Automated coverage
+
+3 of 46 scenarios are automated so far. Two P1 `@smoke` scenarios, SYS-01 and AUTH-04, are still missing even though smoke runs on every commit.
+
+| ID | Spec file | Test |
+| --- | --- | --- |
+| SYS-02 | `tests/main.smoke.spec.ts` | 5 page-load tests: home, login, registration, Swagger, documentation |
+| AUTH-01 | `tests/register.spec.ts` | registers a new user and redirects to the login page |
+| AUTH-14 | `tests/register.negative.spec.ts` | rejects a display name with disallowed characters and sends no request |
 
 ## Environment, data and criteria
 
