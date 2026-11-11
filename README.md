@@ -1,37 +1,21 @@
 # rolnopol-atf
 
-Zestaw testów aplikacji Rolnopol napisany w Playwright i TypeScript.
+Testy aplikacji Rolnopol w Playwright i TypeScript.
 
 ## Wymagania
 
 - Node.js i npm
-- Aplikacja Rolnopol w katalogu `../test-repo/rolnopol` względem tego repozytorium. Playwright uruchamia ją automatycznie przez `npm start` i korzysta z `http://localhost:3000`.
+- Aplikacja Rolnopol w `../test-repo/rolnopol` (Playwright uruchamia ją automatycznie przez `npm start`)
 
-## Instalacja
-
-W katalogu tego repozytorium uruchom:
+## Instalacja i uruchomienie
 
 ```sh
 npm ci
 npx playwright install chromium
-```
 
-## Uruchamianie testów
-
-```sh
-npm test
-```
-
-Aby uruchomić testy z widoczną przeglądarką:
-
-```sh
-npm run test:headed
-```
-
-Aby wyświetlić raport HTML po uruchomieniu testów:
-
-```sh
-npm run test:report
+npm test                # testy
+npm run test:headed     # z widoczną przeglądarką
+npm run test:report     # raport HTML
 ```
 
 ## Dokumentacja
