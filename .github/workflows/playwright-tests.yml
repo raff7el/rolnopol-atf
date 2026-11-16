@@ -5,6 +5,10 @@ on:
     branches:
       - ci/github-actions
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -35,10 +39,35 @@ jobs:
       - name: Run tests
         run: npx playwright test
 
-      - name: Upload report
-        if: ${{ !cancelled() }}
+      - name: Publish test summary
+        if: always()
+        uses: dorny/test-reporter@v2
+        with:
+          name: Playwright results
+          path: test-results/junit.xml
+          reporter: java-junit
+          fail-on-error: false
+          fail-on-empty: false
+
+      # Step label shown in the GitHub Actions run log
+      - name: Upload HTML report
+        # Run this step every time, even if earlier steps (e.g. tests) failed or the run was cancelled
+        if: always()
+        # Official GitHub action that stores files from the runner as a downloadable artifact
+        uses: actions/upload-artifact@v4
+        # Input parameters passed to the upload-artifact action
+        with:
+          # Artifact name shown on the run's Summary page (and used when downloading it)
+          name: playwright-report
+          # Folder to upload: the HTML report Playwright generates after the test run
+          path: playwright-report/
+          # GitHub deletes the artifact automatically after 7 days
+          retention-days: 7
+
+      - name: Upload test results (traces, JUnit)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: test-results
+          path: test-results/
           retention-days: 7
