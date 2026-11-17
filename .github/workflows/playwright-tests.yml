@@ -1,0 +1,74 @@
+name: Playwright Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      rolnopol:
+        image: jaktestowac/rolnopol:latest
+        ports:
+          - 3000:3000
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Wait for app
+        run: curl --retry 30 --retry-delay 2 --retry-connrefused --silent --output /dev/null http://localhost:3000
+
+      - name: Run tests
+        run: npx playwright test
+
+      - name: Publish test summary
+        if: always()
+        uses: dorny/test-reporter@v2
+        with:
+          name: Playwright results
+          path: test-results/junit.xml
+          reporter: java-junit
+          fail-on-error: false
+          fail-on-empty: false
+
+      # Step label shown in the GitHub Actions run log
+      - name: Upload HTML report
+        # Run this step every time, even if earlier steps (e.g. tests) failed or the run was cancelled
+        if: always()
+        # Official GitHub action that stores files from the runner as a downloadable artifact
+        uses: actions/upload-artifact@v4
+        # Input parameters passed to the upload-artifact action
+        with:
+          # Artifact name shown on the run's Summary page (and used when downloading it)
+          name: playwright-report
+          # Folder to upload: the HTML report Playwright generates after the test run
+          path: playwright-report/
+          # GitHub deletes the artifact automatically after 7 days
+          retention-days: 7
+
+      - name: Upload test results (traces, JUnit)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
