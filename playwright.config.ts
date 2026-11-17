@@ -4,6 +4,8 @@ export default defineConfig({
   testDir: './tests',
   timeout: 10_000,
   fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI
     ? [
         ['list'],
@@ -13,7 +15,7 @@ export default defineConfig({
     : [['html', { open: 'never' }]],
   use: {
     baseURL: 'http://localhost:3000',
-    trace: 'on',
+    trace: process.env.CI ? 'retain-on-failure' : 'on',
   },
   webServer: {
     command: 'npm start',

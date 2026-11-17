@@ -10,12 +10,21 @@ permissions:
   contents: read
   checks: write
 
+# Cancel an in-progress run when a newer commit is pushed to the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ARTIFACT_SUFFIX: pr${{ github.event.pull_request.number }}-${{ github.run_number }}-${{ github.run_attempt }}
     services:
       rolnopol:
-        image: jaktestowac/rolnopol:latest
+        # Pinned for reproducible runs; bump deliberately when upgrading the app under test
+        image: jaktestowac/rolnopol:1.126.0
         ports:
           - 3000:3000
     steps:
@@ -38,10 +47,12 @@ jobs:
         run: curl --retry 30 --retry-delay 2 --retry-connrefused --silent --output /dev/null http://localhost:3000
 
       - name: Run tests
+        id: tests
         run: npx playwright test
 
+      # Reporting steps run only if the tests actually ran and the workflow wasn't cancelled
       - name: Publish test summary
-        if: always()
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
         uses: dorny/test-reporter@v2
         with:
           name: Playwright results
@@ -50,25 +61,18 @@ jobs:
           fail-on-error: false
           fail-on-empty: false
 
-      # Step label shown in the GitHub Actions run log
       - name: Upload HTML report
-        # Run this step every time, even if earlier steps (e.g. tests) failed or the run was cancelled
-        if: always()
-        # Official GitHub action that stores files from the runner as a downloadable artifact
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
         uses: actions/upload-artifact@v4
-        # Input parameters passed to the upload-artifact action
         with:
-          # Artifact name shown on the run's Summary page (and used when downloading it)
-          name: playwright-report
-          # Folder to upload: the HTML report Playwright generates after the test run
+          name: playwright-report-${{ env.ARTIFACT_SUFFIX }}
           path: playwright-report/
-          # GitHub deletes the artifact automatically after 7 days
           retention-days: 7
 
       - name: Upload test results (traces, JUnit)
-        if: always()
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-results-${{ env.ARTIFACT_SUFFIX }}
           path: test-results/
           retention-days: 7
