@@ -4,10 +4,18 @@ export default defineConfig({
   testDir: './tests',
   timeout: 10_000,
   fullyParallel: true,
-  reporter: [['html', {open: 'never'}]],
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  reporter: process.env.CI
+    ? [
+        ['list'],
+        ['html', { open: 'never' }],
+        ['junit', { outputFile: 'test-results/junit.xml' }],
+      ]
+    : [['html', { open: 'never' }]],
   use: {
     baseURL: 'http://localhost:3000',
-    trace: 'on',
+    trace: process.env.CI ? 'retain-on-failure' : 'on',
   },
   webServer: {
     command: 'npm start',
