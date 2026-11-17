@@ -8,6 +8,11 @@ node_modules/
 /playwright/.auth/
 /.playwright-mcp/
 
+# Environment variables (keep secrets out of git; .env.example is the template)
+.env
+.env.*
+!.env.example
+
 # Temporary agent files
 /.ai-temp/**
 !/.ai-temp/.gitkeep
