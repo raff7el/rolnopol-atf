@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { PAGE_URLS } from "../src/constants/pageurls";
+import { createUser } from "../src/factories/user.factory";
 import { LoginPage } from "../src/pages/login.page";
 import { ProfilePage } from "../src/pages/profile.page";
 
-// FARM-06: emptyuser has no farm data, so the profile page should load
+// FARM-06: emptyuser (TEST_USER_* in .env) has no farm data, so the profile page should load
 // successfully with all sections visible and no errors.
 test(
   "logs in as the empty user, displays profile sections, and logs out",
@@ -12,12 +13,10 @@ test(
     // Arrange
     const loginPage = new LoginPage(page);
     const profilePage = new ProfilePage(page);
+    const user = createUser();
 
     await loginPage.goto();
-    await loginPage.fillForm({
-      email: "emptyuser@rolnopol.demo.pl",
-      password: "demoPass123",
-    });
+    await loginPage.fillForm(user);
 
     // Act
     await loginPage.submit();
