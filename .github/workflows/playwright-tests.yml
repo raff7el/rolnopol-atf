@@ -5,22 +5,27 @@ on:
     types: [opened, synchronize, reopened]
     branches:
       - '**'
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
   checks: write
 
-# Cancel an in-progress run when a newer commit is pushed to the same PR
+# Cancel an in-progress run when a newer commit is pushed to the same PR.
+# Runs on main are never cancelled, so every merged commit gets a full result.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      ARTIFACT_SUFFIX: pr${{ github.event.pull_request.number }}-${{ github.run_number }}-${{ github.run_attempt }}
+      # "pr<number>" for pull requests, branch name (e.g. "main") for pushes
+      ARTIFACT_SUFFIX: ${{ github.event.pull_request.number && format('pr{0}', github.event.pull_request.number) || github.ref_name }}-${{ github.run_number }}-${{ github.run_attempt }}
     services:
       rolnopol:
         # Pinned for reproducible runs; bump deliberately when upgrading the app under test
