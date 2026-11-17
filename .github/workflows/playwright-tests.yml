@@ -1,0 +1,78 @@
+name: Playwright Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+  checks: write
+
+# Cancel an in-progress run when a newer commit is pushed to the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ARTIFACT_SUFFIX: pr${{ github.event.pull_request.number }}-${{ github.run_number }}-${{ github.run_attempt }}
+    services:
+      rolnopol:
+        # Pinned for reproducible runs; bump deliberately when upgrading the app under test
+        image: jaktestowac/rolnopol:1.126.0
+        ports:
+          - 3000:3000
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Wait for app
+        run: curl --retry 30 --retry-delay 2 --retry-connrefused --silent --output /dev/null http://localhost:3000
+
+      - name: Run tests
+        id: tests
+        run: npx playwright test
+
+      # Reporting steps run only if the tests actually ran and the workflow wasn't cancelled
+      - name: Publish test summary
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
+        uses: dorny/test-reporter@v2
+        with:
+          name: Playwright results
+          path: test-results/junit.xml
+          reporter: java-junit
+          fail-on-error: false
+          fail-on-empty: false
+
+      - name: Upload HTML report
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ env.ARTIFACT_SUFFIX }}
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Upload test results (traces, JUnit)
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ env.ARTIFACT_SUFFIX }}
+          path: test-results/
+          retention-days: 7
