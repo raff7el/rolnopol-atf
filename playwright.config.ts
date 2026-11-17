@@ -8,9 +8,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI
     ? [
-        ['list'],
+        ['github'],
         ['html', { open: 'never' }],
-        ['junit', { outputFile: 'test-results/junit.xml' }],
       ]
     : [['html', { open: 'never' }]],
   use: {
