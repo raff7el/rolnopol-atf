@@ -12,7 +12,10 @@ if (!BASE_URL) {
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 10_000,
+  // Playwright's default. The test timeout also covers fixture setup and
+  // teardown (incl. saving the trace), and registration alone takes ~5s in
+  // the app (API response + 2s redirect delay), so 10s was too tight.
+  timeout: 30_000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -31,6 +34,10 @@ export default defineConfig({
     cwd: '../test-repo/rolnopol',
     url: BASE_URL,
     reuseExistingServer: true,
+    // Rolnopol delays writes to users.json and financial.json by 1s, which makes
+    // register ~3s and login ~1s. 0 writes immediately, as the app's own tests do.
+    // Applies only when Playwright starts the server, not to one already running.
+    env: { JSON_DB_WRITE_DEBOUNCE_MS: '0' },
     timeout: 120_000,
   },
   projects: [

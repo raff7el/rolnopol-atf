@@ -8,7 +8,6 @@ test(
   { tag: "@ui" },
   async ({ page }) => {
     // Arrange
-    test.setTimeout(20_000);
     const registerPage = new RegisterPage(page);
     const email = createUniqueEmail();
 

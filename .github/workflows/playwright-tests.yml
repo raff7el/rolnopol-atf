@@ -39,6 +39,10 @@ jobs:
         image: jaktestowac/rolnopol:1.126.0
         ports:
           - 3000:3000
+        env:
+          # Write JSON DB changes immediately instead of after a 1s debounce,
+          # so register (~3s) and login (~1s) respond without the delay.
+          JSON_DB_WRITE_DEBOUNCE_MS: "0"
     steps:
       - name: Checkout
         uses: actions/checkout@v5
