@@ -65,6 +65,7 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 | FARM-04 | Farm | Add staff with name and age | Staff member listed | P2 | `@ui` |
 | FARM-05 | Farm | Assign staff to a field, then unassign | Assignment created, then removed | P1 | `@ui` |
 | FARM-06 | Farm | Log in as emptyuser@rolnopol.demo.pl | Empty states shown, no errors | P3 | `@ui` |
+| PROF-01 | Profile | Change the display name in the Update Profile form, then reload | `PUT /api/v1/users/profile` returns 200; "Profile updated successfully!"; new name in the header and in Profile Information; still shown after reload | P2 | `@ui` |
 | MKT-01 | Marketplace | Create an offer for an unassigned field | Offer status `active`, visible to other users | P1 | `@e2e` |
 | MKT-02 | Marketplace | Create an offer for an assigned field or animal | Offer status `unavailable` | P1 | `@api` |
 | MKT-03 | Marketplace | Offer the same asset twice | Second offer rejected | P2 | `@api` |
@@ -92,7 +93,7 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 
 ## Automated coverage
 
-4 of 46 scenarios are automated so far. Two P1 `@smoke` scenarios, SYS-01 and AUTH-04, are still missing even though smoke runs on every commit.
+5 of 47 scenarios are automated so far. Two P1 `@smoke` scenarios, SYS-01 and AUTH-04, are still missing even though smoke runs on every commit.
 
 | ID | Spec file | Test |
 | --- | --- | --- |
@@ -100,6 +101,7 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 | AUTH-01 | `tests/register.spec.ts` | registers a new user and redirects to the login page |
 | AUTH-14 | `tests/register.negative.spec.ts` | rejects a display name with disallowed characters and sends no request |
 | FARM-06 | `tests/auth.profile.spec.ts` | logs in as the empty user, displays profile sections, and logs out |
+| PROF-01 | `tests/profile.update.spec.ts` | updates the display name and keeps it after reload |
 
 ## Environment, data and criteria
 
