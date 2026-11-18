@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { PAGE_URLS } from "../src/constants/pageurls";
+import { createUniqueEmail } from "../src/factories/user.factory";
 import { RegisterPage } from "../src/pages/register.page";
 
 test(
@@ -9,7 +10,7 @@ test(
     // Arrange
     test.setTimeout(20_000);
     const registerPage = new RegisterPage(page);
-    const email = `autotest_${Date.now()}@example.com`;
+    const email = createUniqueEmail();
 
     await registerPage.goto();
     await registerPage.fillForm({

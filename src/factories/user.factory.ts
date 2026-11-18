@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { type User } from "../models/user.model";
 
 /**
@@ -19,6 +20,15 @@ function requireEnv(name: string): string {
     throw new Error(`${name} is not set. Copy .env.example to .env and fill it in.`);
   }
   return value;
+}
+
+/**
+ * Returns an email address that is unique across workers and runs, for tests
+ * that register new accounts. Uses a random UUID rather than a timestamp, so
+ * two tests starting in the same millisecond cannot collide.
+ */
+export function createUniqueEmail(): string {
+  return `autotest_${randomUUID()}@example.com`;
 }
 
 /**
