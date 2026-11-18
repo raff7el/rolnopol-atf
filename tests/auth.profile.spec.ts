@@ -24,9 +24,27 @@ test(
     // Assert
     await expect(page).toHaveURL(PAGE_URLS.profile);
     await expect(page).toHaveTitle("Profile - Rolnopol");
-    await expect(profilePage.profileInformationHeading).toBeVisible();
-    await expect(profilePage.updateProfileHeading).toBeVisible();
-    await expect(profilePage.dangerZoneHeading).toBeVisible();
+    await expect(profilePage.profileContent).toBeVisible();
+
+    // Independent facts about the loaded profile - report every mismatch at once.
+    await expect.soft(profilePage.headerName).toHaveText(user.displayName);
+    await expect.soft(profilePage.headerEmail).toHaveText(user.email);
+    await expect.soft(profilePage.statusText).toHaveText("Active");
+    await expect.soft(profilePage.logoutButton).toBeVisible();
+
+    await expect.soft(profilePage.profileInformationHeading).toBeVisible();
+    await expect.soft(profilePage.updateProfileHeading).toBeVisible();
+    await expect.soft(profilePage.dangerZoneHeading).toBeVisible();
+
+    await expect.soft(profilePage.userIdValue).toHaveText(/^\d+$/);
+    await expect.soft(profilePage.displayedNameValue).toHaveText(user.displayName);
+    await expect.soft(profilePage.emailValue).toHaveText(user.email);
+    // "-" is the placeholder before data loads, "N/A" means the value is missing.
+    await expect.soft(profilePage.createdAtValue).not.toHaveText(/^(-|N\/A)$/);
+    await expect.soft(profilePage.lastLoginValue).not.toHaveText(/^(-|N\/A)$/);
+
+    // Do not continue to logout on a broken profile state.
+    expect(test.info().errors).toHaveLength(0);
 
     // Act
     await profilePage.logout();
