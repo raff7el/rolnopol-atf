@@ -77,7 +77,27 @@ For UI tests:
 - Use Page Objects pattern.
 - Use stable locator strategies (role, label, text) whenever possible.
 - Avoid sleeps and magic timeouts.
+- Use soft assertions where appropriate (see below).
 - Reflect implementation progress in the plan.
+
+#### Soft assertions
+
+Use `expect.soft()` when a test checks several **independent** facts about the same state, so one run reports every mismatch instead of stopping at the first:
+
+- Several fields, labels, or values on one screen (e.g. profile data, summary panel, table row).
+- Several records checked after one action (e.g. balances, ownership, and status after a purchase).
+
+Keep hard `expect()` when a failure makes the rest of the test meaningless:
+
+- Preconditions and navigation checks (correct page loaded, user logged in, element visible before interacting).
+- Any assertion that a later step or assertion depends on.
+- A test with a single assertion.
+
+Rules:
+
+- Soft assertions live only in the `// Assert` block of spec files, like all other assertions. Never in Page Objects.
+- When the soft checks are followed by further steps, guard them with `expect(test.info().errors).toHaveLength(0)` so the test does not continue on a broken state.
+- Do not use soft assertions to hide flaky or known-failing checks.
 
 ### 6. Run regression tests (mandatory)
 
@@ -97,6 +117,7 @@ Before finishing, verify:
 
 - Tests include correct tags.
 - Assertions verify user-observable behavior.
+- Soft assertions are used for independent checks only; preconditions and dependent checks use hard `expect()`.
 - No duplicated selectors or logic outside Page Objects.
 - Code style matches existing tests.
 - Update the plan with validation results.
