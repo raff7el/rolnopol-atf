@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { DocsPage } from "../src/pages/docs.page";
-import { HomePage } from "../src/pages/home.page";
-import { LoginPage } from "../src/pages/login.page";
-import { RegisterPage } from "../src/pages/register.page";
-import { SwaggerPage } from "../src/pages/swagger.page";
+import { DocsPage } from "../../src/pages/docs.page";
+import { HomePage } from "../../src/pages/home.page";
+import { LoginPage } from "../../src/pages/login.page";
+import { RegisterPage } from "../../src/pages/register.page";
+import { SwaggerPage } from "../../src/pages/swagger.page";
 
 test(
   "displays the Rolnopol page title and welcome heading",

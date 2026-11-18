@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
+import { STORAGE_STATE } from './src/config/auth';
 
 // Local values live in .env (git-ignored). In CI they come from the workflow env.
 dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
@@ -41,8 +42,33 @@ export default defineConfig({
     timeout: 120_000,
   },
   projects: [
+    // Fast check: is the app up and are its public pages served? No login.
     {
-      name: 'chromium',
+      name: 'smoke-tests',
+      testDir: './tests/smoke',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    // Logs in as DEMO_USER once and saves the session for 'demo-user'.
+    {
+      name: 'setup',
+      testDir: './tests/auth',
+      testMatch: /.*\.setup\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+    },
+    // Tests that start already logged in as DEMO_USER.
+    {
+      name: 'demo-user',
+      testDir: './tests/session',
+      dependencies: ['setup'],
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: STORAGE_STATE.demo,
+      },
+    },
+    // UI flows that start logged out (registration, logging in as other users).
+    {
+      name: 'ui',
+      testDir: './tests/ui',
       use: { ...devices['Desktop Chrome'] },
     },
   ],

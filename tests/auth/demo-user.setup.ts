@@ -1,12 +1,15 @@
-import { test, expect } from "@playwright/test";
-import { PAGE_URLS } from "../src/constants/pageurls";
-import { createUser } from "../src/factories/user.factory";
-import { LoginPage } from "../src/pages/login.page";
+import { test as setup, expect } from "@playwright/test";
+import { STORAGE_STATE } from "../../src/config/auth";
+import { PAGE_URLS } from "../../src/constants/pageurls";
+import { createUser } from "../../src/factories/user.factory";
+import { LoginPage } from "../../src/pages/login.page";
 
 // AUTH-04: the demo user (TEST_DEMO_USER_* in .env) logs in through the UI;
 // the API returns a token, auth cookies are set, and the user lands on the profile page.
-test(
-  "logs in as the demo user, sets auth cookies, and redirects to the profile page",
+// The resulting browser state is saved for the `demo-user` project, so if this
+// login fails, the tests that need the session are skipped instead of each failing on its own.
+setup(
+  "logs in as the demo user, sets auth cookies, and saves the session",
   { tag: "@smoke" },
   async ({ page, context }) => {
     // Arrange
@@ -36,5 +39,8 @@ test(
     expect(cookieNames).toEqual(
       expect.arrayContaining(["rolnopolToken", "rolnopolLoginTime"]),
     );
+
+    // Save
+    await context.storageState({ path: STORAGE_STATE.demo });
   },
 );

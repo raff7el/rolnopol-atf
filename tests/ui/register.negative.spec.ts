@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
-import { PAGE_URLS } from "../src/constants/pageurls";
-import { createUniqueEmail } from "../src/factories/user.factory";
-import { RegisterPage } from "../src/pages/register.page";
+import { PAGE_URLS } from "../../src/constants/pageurls";
+import { createUniqueEmail } from "../../src/factories/user.factory";
+import { RegisterPage } from "../../src/pages/register.page";
 
 // AUTH-14: "John@Doe!" passes the browser's own checks (3-20 chars, no
 // `pattern` attribute), so only the app's display-name validation can stop it.
