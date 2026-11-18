@@ -29,6 +29,7 @@ jobs:
       BASE_URL: ${{ vars.BASE_URL }}
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      TEST_USER_DISPLAY_NAME: ${{ vars.TEST_USER_DISPLAY_NAME }}
       # "pr<number>" for pull requests, branch name (e.g. "main") for pushes
       ARTIFACT_SUFFIX: ${{ github.event.pull_request.number && format('pr{0}', github.event.pull_request.number) || github.ref_name }}-${{ github.run_number }}-${{ github.run_attempt }}
     services:

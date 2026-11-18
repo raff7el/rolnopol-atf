@@ -12,7 +12,12 @@ import path from "path";
  */
 dotenv.config({ path: path.resolve(__dirname, "../../.env"), quiet: true });
 
-const REQUIRED_VARS = ["BASE_URL", "TEST_USER_EMAIL", "TEST_USER_PASSWORD"] as const;
+const REQUIRED_VARS = [
+  "BASE_URL",
+  "TEST_USER_EMAIL",
+  "TEST_USER_PASSWORD",
+  "TEST_USER_DISPLAY_NAME",
+] as const;
 
 type RequiredVar = (typeof REQUIRED_VARS)[number];
 
@@ -36,6 +41,7 @@ export const ENV = Object.freeze({
   testUser: Object.freeze({
     email: required.TEST_USER_EMAIL,
     password: required.TEST_USER_PASSWORD,
+    displayName: required.TEST_USER_DISPLAY_NAME,
   }),
   /** Optional: set by CI providers; any non-empty value means "running in CI". */
   isCI: !!process.env.CI,

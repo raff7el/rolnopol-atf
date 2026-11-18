@@ -9,5 +9,6 @@ export function createUser(overrides: Partial<User> = {}): User {
   return {
     email: overrides.email ?? ENV.testUser.email,
     password: overrides.password ?? ENV.testUser.password,
+    displayName: overrides.displayName ?? ENV.testUser.displayName,
   };
 }
