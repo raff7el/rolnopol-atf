@@ -50,7 +50,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: lts/*
+          # Keep CI runtime pinned to avoid breakage from LTS auto-rollovers.
+          node-version: 24.22.3
           cache: npm
 
       - name: Install dependencies

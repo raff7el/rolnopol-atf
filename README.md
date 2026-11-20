@@ -4,7 +4,7 @@ Testy aplikacji Rolnopol w Playwright i TypeScript.
 
 ## Wymagania
 
-- Node.js i npm
+- Node.js `24.22.3` (zgodnie z `.nvmrc`) i npm
 - Aplikacja Rolnopol w `../test-repo/rolnopol` (Playwright uruchamia ją automatycznie przez `npm start`)
 
 ## Instalacja i uruchomienie
