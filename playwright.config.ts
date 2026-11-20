@@ -1,15 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
-import path from 'path';
 import { STORAGE_STATE } from './src/config/auth';
-
-// Local values live in .env (git-ignored). In CI they come from the workflow env.
-dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
-
-const BASE_URL = process.env.BASE_URL;
-if (!BASE_URL) {
-  throw new Error('BASE_URL is not set. Copy .env.example to .env and fill it in.');
-}
+// Loads .env and validates all required variables; throws before any test runs.
+import { ENV } from './src/config/env';
 
 export default defineConfig({
   testDir: './tests',
@@ -18,22 +10,22 @@ export default defineConfig({
   // the app (API response + 2s redirect delay), so 10s was too tight.
   timeout: 30_000,
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI
+  forbidOnly: ENV.isCI,
+  retries: ENV.isCI ? 2 : 0,
+  reporter: ENV.isCI
     ? [
         ['github'],
         ['html', { open: 'never' }],
       ]
     : [['html', { open: 'never' }]],
   use: {
-    baseURL: BASE_URL,
-    trace: process.env.CI ? 'retain-on-failure' : 'on',
+    baseURL: ENV.baseUrl,
+    trace: ENV.isCI ? 'retain-on-failure' : 'on',
   },
   webServer: {
     command: 'npm start',
     cwd: '../test-repo/rolnopol',
-    url: BASE_URL,
+    url: ENV.baseUrl,
     reuseExistingServer: true,
     // Rolnopol delays writes to users.json and financial.json by 1s, which makes
     // register ~3s and login ~1s. 0 writes immediately, as the app's own tests do.
