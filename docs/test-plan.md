@@ -92,7 +92,7 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 
 ## Automated coverage
 
-5 of 46 scenarios are automated so far. One P1 `@smoke` scenario, SYS-01, is still missing even though smoke runs on every commit.
+6 of 46 scenarios are automated so far. One P1 `@smoke` scenario, SYS-01, is still missing even though smoke runs on every commit.
 
 | ID | Spec file | Test |
 | --- | --- | --- |
@@ -101,6 +101,7 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 | AUTH-01 | `tests/register.spec.ts` | registers a new user and redirects to the login page |
 | AUTH-14 | `tests/register.negative.spec.ts` | rejects a display name with disallowed characters and sends no request |
 | FARM-06 | `tests/auth.profile.spec.ts` | logs in as the empty user, displays profile sections, and logs out |
+| FARM-01 | `tests/session/demo.staff-fields.spec.ts` | creates a new field in the Staff & Fields view for a logged-in user |
 
 ## Environment, data and criteria
 
