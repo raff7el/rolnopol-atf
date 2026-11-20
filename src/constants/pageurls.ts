@@ -9,6 +9,7 @@ export const PAGE_URLS = {
   profile: "/profile.html",
   swagger: "/swagger.html",
   docs: "/docs.html",
+  staffFields: "/staff-fields-main.html",
 } as const;
 
 export type PageUrl = (typeof PAGE_URLS)[keyof typeof PAGE_URLS];

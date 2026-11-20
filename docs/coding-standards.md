@@ -7,7 +7,7 @@ Page Objects describe **what is on a page and what a user can do there**. Tests 
 ### Key rules
 
 1. **No assertions in Page Objects.** No `expect`, no `import { expect }`, and no `verify*` / `assert*` / `should*` helpers.
-2. **All verifications live in test files** (`tests/*.spec.ts`), inside the `// Assert` block.
+2. **All verifications live in test files** (`tests/**/*.spec.ts`, `tests/auth/*.setup.ts`), inside the `// Assert` block.
 3. **Return what the test needs to check.** Expose a `Locator`, a value, or a `Promise<Response>` and let the test assert on it.
 
 ### Structure

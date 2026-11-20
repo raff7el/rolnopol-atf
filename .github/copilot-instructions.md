@@ -1,5 +1,12 @@
 # Copilot Instructions
 
+## Secrets and Credentials
+
+- Never read, open, search, print, or edit the `.env` file yourself.
+- For credentials available to AI (e.g. logging in to the app during
+  exploration or test authoring), use only `.env.ai`.
+- Test code loads `.env` through dotenv; do not change that.
+
 ## Commits
 
 Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) with

@@ -27,8 +27,10 @@ jobs:
     environment: dev
     env:
       BASE_URL: ${{ vars.BASE_URL }}
-      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      TEST_EMPTY_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_EMPTY_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      TEST_DEMO_USER_EMAIL: ${{ secrets.TEST_DEMO_USER_EMAIL }}
+      TEST_DEMO_USER_PASSWORD: ${{ secrets.TEST_DEMO_USER_PASSWORD }}
       # "pr<number>" for pull requests, branch name (e.g. "main") for pushes
       ARTIFACT_SUFFIX: ${{ github.event.pull_request.number && format('pr{0}', github.event.pull_request.number) || github.ref_name }}-${{ github.run_number }}-${{ github.run_attempt }}
     services:
@@ -37,6 +39,10 @@ jobs:
         image: jaktestowac/rolnopol:1.126.0
         ports:
           - 3000:3000
+        env:
+          # Write JSON DB changes immediately instead of after a 1s debounce,
+          # so register (~3s) and login (~1s) respond without the delay.
+          JSON_DB_WRITE_DEBOUNCE_MS: "0"
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -44,7 +50,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: lts/*
+          # Keep CI runtime pinned to avoid breakage from LTS auto-rollovers.
+          node-version: 24.22.3
           cache: npm
 
       - name: Install dependencies
