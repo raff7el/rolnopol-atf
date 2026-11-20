@@ -25,7 +25,8 @@ test(
   async ({ page }) => {
     // Arrange
     const staffFieldsPage = new StaffFieldsPage(page);
-    const animal: AnimalData = { type: "cow", amount: 42 };
+    // A rarely used type, so the search below fits on one page of 5 cards.
+    const animal: AnimalData = { type: "tardigrade", amount: 42 };
 
     await staffFieldsPage.goto();
     await expect(page).toHaveURL(PAGE_URLS.staffFields);
@@ -52,7 +53,7 @@ test(
     await expect(staffFieldsPage.addAnimalModal).toBeHidden();
 
     await reloadAnimalsResponsePromise;
-    await staffFieldsPage.openLastAnimalsPage();
+    await staffFieldsPage.searchAnimals(animal.type);
     const createdAnimal = staffFieldsPage.animalCard(body.data.id);
     await expect(createdAnimal).toBeVisible();
     await expect(createdAnimal).toContainText(animal.type);

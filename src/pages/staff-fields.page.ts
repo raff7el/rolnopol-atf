@@ -36,7 +36,7 @@ export class StaffFieldsPage extends BasePage {
   // Animals section
   readonly animalsList: Locator;
   readonly animalCards: Locator;
-  readonly animalsPagination: Locator;
+  readonly animalsSearchInput: Locator;
   readonly openAddAnimalModalButton: Locator;
   readonly addAnimalModal: Locator;
   readonly animalTypeSelect: Locator;
@@ -67,7 +67,7 @@ export class StaffFieldsPage extends BasePage {
 
     this.animalsList = page.locator("#animalsList");
     this.animalCards = this.animalsList.locator("li.animal-card");
-    this.animalsPagination = page.locator("#animalsPagination");
+    this.animalsSearchInput = page.locator("#animalsSearch");
     this.openAddAnimalModalButton = page.locator("#openAddAnimalModal");
     this.addAnimalModal = page.locator("#addAnimalModal");
     this.animalTypeSelect = this.addAnimalModal.getByLabel("Type");
@@ -156,13 +156,11 @@ export class StaffFieldsPage extends BasePage {
   }
 
   /**
-   * The list shows 5 groups per page and appends new ones at the end,
-   * so a freshly added group is on the last page.
+   * Filters the list client-side by animal type or field name. The page
+   * clears this box after an animal is added, before it reloads the list,
+   * so search only once that reload has been received.
    */
-  async openLastAnimalsPage(): Promise<void> {
-    await this.animalsPagination
-      .locator(".pagination-btn:not([data-page='prev']):not([data-page='next'])")
-      .last()
-      .click();
+  async searchAnimals(term: string): Promise<void> {
+    await this.animalsSearchInput.fill(term);
   }
 }
