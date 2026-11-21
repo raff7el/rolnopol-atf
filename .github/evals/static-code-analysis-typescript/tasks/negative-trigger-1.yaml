@@ -1,18 +1,18 @@
 id: negative-trigger-001
-name: Negative Trigger 1
-description: Auto-generated negative-trigger task.
+name: Test plan tag question
+description: Picking a test tag belongs to test-plan-traceability, not this skill.
 tags:
   - negative-trigger
 inputs:
-  prompt: "Tell me a short joke about coffee."
+  prompt: "Which tag and scenario ID should a new logout test have?"
 expected:
   should_trigger: false
 graders:
   - type: text
-    name: omits-skill-keywords
+    name: omits-tooling-terms
     config:
       not_contains:
-        - "analysis"
-        - "code"
-        - "static"
-        - "typescript"
+        - "eslint.config"
+        - "lint-staged"
+        - "husky"
+        - "prettier"

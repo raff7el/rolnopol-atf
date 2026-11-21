@@ -1,0 +1,18 @@
+id: negative-trigger-002
+name: Writing a test
+description: Writing test code is not a static analysis setup task.
+tags:
+  - negative-trigger
+inputs:
+  prompt: "Write a Playwright test that checks the login page has the title 'Login - Rolnopol'."
+expected:
+  should_trigger: false
+graders:
+  - type: text
+    name: omits-tooling-terms
+    config:
+      not_contains:
+        - "eslint.config"
+        - "lint-staged"
+        - "husky"
+        - "tsconfig"
