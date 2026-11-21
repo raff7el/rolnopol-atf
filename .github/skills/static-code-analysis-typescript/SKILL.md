@@ -137,7 +137,7 @@ export default [
 **Key design decisions:**
 
 - `simple-import-sort/imports` and `simple-import-sort/exports` enforce consistent import order as an ESLint rule, not a Prettier plugin
-- Prettier formatting checks run via `prettier --check`; ESLint focuses on code quality and import order
+- Prettier formatting checks run via `prettier --check` on all files, including `*.ts`; ESLint focuses on code quality and import order
 - The `files: ['**/*.ts']` block scopes TypeScript rules to `.ts` files only
 - Playwright `globalAliases` tells the Playwright plugin that `setup` and `health` are valid test functions
 
@@ -172,7 +172,7 @@ This example mirrors the recommended architecture:
     "check": "npm run format && npm run lint && npm run tsc:check",
     "check:ci": "npm run format:check && npm run lint && npm run tsc:check",
     "format": "npx prettier --write .",
-    "format:check": "npx prettier --check \"**/*.{json,md,mjs,yml,yaml}\"",
+    "format:check": "npx prettier --check .",
     "lint": "npx eslint . --max-warnings=0",
     "lint-staged": "npx lint-staged",
     "tsc:check": "npx tsc --noEmit --pretty --strict"
@@ -202,6 +202,8 @@ This example mirrors the recommended architecture:
   }
 }
 ```
+
+**`format:check` must cover the same files as `format`.** In this setup (Model A) no ESLint rule checks formatting, so the Prettier CLI is the only formatting check for `*.ts`. A non-TS glob such as `"**/*.{json,md,mjs,yml,yaml}"` would leave TypeScript formatting unchecked in CI. Use a non-TS glob only with `eslint-plugin-prettier` (Model B), and then name the script `format:check:non-ts` so the split is visible.
 
 **Script naming conventions:**
 
@@ -332,7 +334,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check formatting (non-TS)
+      - name: Check formatting
         run: npm run format:check
 
       - name: Lint
@@ -388,7 +390,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check formatting (non-TS)
+      - name: Check formatting
         run: npm run format:check
 
       - name: Lint
@@ -605,8 +607,8 @@ Guidelines:
 - commands used in CI should not mutate files
 - provide both `check` (local, with `--write`) and `check:ci` (CI, with `--check`)
 - if the repo intentionally splits non-TS and TS formatting, make that explicit with names such as:
-- `format:check`
-- `format:check:non-ts`
+  - `format:check`
+  - `format:check:non-ts`
 
 ### 6. Decide how formatting should work
 
