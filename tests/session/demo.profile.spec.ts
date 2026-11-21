@@ -5,6 +5,8 @@ import { ProfilePage } from "../../src/pages/profile.page";
 
 // Runs in the `demo-user` project, which starts already logged in as the demo
 // user with the session saved by tests/auth/demo-user.setup.ts.
+// Supporting: checks that the saved session (AUTH-04) still works, so a broken
+// setup shows up here instead of as failures in every session test.
 test(
   "opens the profile page with the saved demo user session",
   { tag: "@ui" },

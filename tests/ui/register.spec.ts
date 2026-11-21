@@ -4,6 +4,8 @@ import { PAGE_URLS } from "../../src/constants/pageurls";
 import { createUniqueEmail } from "../../src/factories/user.factory";
 import { RegisterPage } from "../../src/pages/register.page";
 
+// AUTH-01: a unique email per run keeps the test off the duplicate-email
+// path (AUTH-16), so it can be rerun against the same database.
 test(
   "registers a new user and redirects to the login page",
   { tag: "@ui" },

@@ -26,9 +26,12 @@ Your goal is to create maintainable, stable, and readable Playwright tests.
 Find and align with global rules, conventions, and standards included in project like:
 
 - `.github/copilot-instructions.md`
-- `CODING_STANDARDS.md`
-- `TEST_PLAN.md`
+- `docs/coding-standards.md`
+- `docs/test-plan.md`
 - `playwright.config.ts`
+
+Use the `test-plan-traceability` skill (`.github/skills/test-plan-traceability/`)
+for scenario IDs, tags, and the test plan's Automated coverage table.
 
 Follow repository patterns by default. Do not override or reinterpret documents except when processing a direct request for a modification. When in doubt, defer to the existing codebase.
 
@@ -37,10 +40,10 @@ Follow repository patterns by default. Do not override or reinterpret documents 
 ### 0. Create the action plan (before any action)
 
 - **Before performing any action** (including MCP exploration, writing code, or running tests),
-  create a plan of action in `.ai-outputs/`.
+  create a plan of action in `.ai-temp/` (git-ignored).
 - Name the file descriptively, e.g.:
-  - `.ai-outputs/ui-authentication-tests-plan.md`
-  - `.ai-outputs/checkout-e2e-plan.md`
+  - `.ai-temp/ui-authentication-tests-plan.md`
+  - `.ai-temp/checkout-e2e-plan.md`
 - The plan should include:
   - Goal of the task
   - Assumptions and open questions
@@ -78,8 +81,9 @@ For UI tests:
 
 ### 4. Design the test
 
-- Choose test cases that clearly map to the Test Plan.
-- Select tags strictly according to `TEST_PLAN.md`.
+- Map each test to a scenario and take its tag using the
+  `test-plan-traceability` skill (Link mode). If no scenario fits, propose one
+  and wait for approval.
 - Keep the scope minimal (one intent per test).
 - Update the plan if the test design changes.
 
@@ -106,7 +110,8 @@ After every change - no matter how small - run the **full existing test suite** 
 
 Before finishing, verify:
 
-- Tests include correct tags.
+- Tests include a scenario link and correct tags, and the test plan's
+  Automated coverage table is updated (`test-plan-traceability`, Sync mode).
 - Assertions verify user-observable behavior.
 - No duplicated selectors or logic outside Page Objects.
 - Code style matches existing tests.

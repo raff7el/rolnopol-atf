@@ -1,0 +1,17 @@
+id: negative-trigger-001
+name: Static analysis request
+description: A lint setup request belongs to static-code-analysis-typescript, not this skill.
+tags:
+  - negative-trigger
+inputs:
+  prompt: "Add a rule to eslint.config.mjs that forbids console.log in src/."
+expected:
+  should_trigger: false
+graders:
+  - type: text
+    name: omits-traceability-terms
+    config:
+      not_contains:
+        - "scenario ID"
+        - "Automated coverage"
+        - "test-plan.md"
