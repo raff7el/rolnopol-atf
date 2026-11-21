@@ -1,0 +1,8 @@
+# Bulk formatting commits, skipped by `git blame`.
+# Enable locally: git config blame.ignoreRevsFile .git-blame-ignore-revs
+# (GitHub applies this file automatically.)
+
+# style: apply prettier formatting to the whole repository
+f6e796a5c9e61a62c334e71510cd73dbd87f0a9b
+# style: sort imports with eslint-plugin-simple-import-sort
+a903ceb97938a973d9bcbb32c3af1f6ac5e122d8
