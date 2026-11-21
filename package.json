@@ -7,12 +7,15 @@
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
     "test:report": "npx playwright show-report",
-    "tsc:check": "tsc --noEmit --pretty",
+    "check": "npm run lint:fix && npm run format && npm run tsc:check",
+    "check:ci": "npm run format:check && npm run lint && npm run tsc:check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",
-    "prepare": "husky",
-    "lint-staged": "lint-staged"
+    "lint:fix": "eslint . --fix --max-warnings=0",
+    "lint-staged": "lint-staged",
+    "tsc:check": "tsc --noEmit --pretty",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
