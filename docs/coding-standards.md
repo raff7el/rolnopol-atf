@@ -10,6 +10,8 @@ Page Objects describe **what is on a page and what a user can do there**. Tests 
 2. **All verifications live in test files** (`tests/**/*.spec.ts`, `tests/auth/*.setup.ts`), inside the `// Assert` block.
 3. **Return what the test needs to check.** Expose a `Locator`, a value, or a `Promise<Response>` and let the test assert on it.
 
+> Enforced by ESLint: importing `expect` from `@playwright/test` in `src/pages/**` fails `npm run lint`.
+
 ### Structure
 
 | Item         | Convention                                                               |

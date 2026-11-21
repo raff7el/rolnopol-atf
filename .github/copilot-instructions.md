@@ -14,6 +14,16 @@ Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) with
 period; keep the header to 72 characters; make one logical change per commit.
 Add `!` after the type or scope for breaking changes.
 
+## Code Quality
+
+- Run `npm run check` after changing code; it must finish without errors.
+  CI runs the non-mutating `npm run check:ci` equivalent before the tests.
+- Fix lint and type errors instead of disabling rules or adding
+  `eslint-disable` / `@ts-ignore`. Do not reorder imports by hand; ESLint
+  sorts them.
+- See [Jakość kodu](../README.md#jakość-kodu-analiza-statyczna) for the
+  full setup.
+
 ## Test Plan and Tagging System
 
 - Tag each new or updated Playwright test with the appropriate tag from the
