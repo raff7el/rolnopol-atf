@@ -181,7 +181,10 @@ This example mirrors the recommended architecture:
     "node": "^20.19.0 || ^22.13.0 || >=24"
   },
   "lint-staged": {
-    "*.ts": ["npx prettier --write", "npx eslint --fix --max-warnings=0"],
+    "*.ts": [
+      "npx eslint --fix --max-warnings=0 --no-warn-ignored",
+      "npx prettier --write"
+    ],
     "*.{json,md,mjs,yml,yaml}": "npx prettier --write"
   },
   "devDependencies": {
@@ -656,8 +659,12 @@ Recommended pattern:
 
 Good staged-file mapping examples:
 
-- `*.ts` → `prettier --write`, `eslint --fix` (this auto-sorts imports and fixes lint issues)
+- `*.ts` → `eslint --fix --max-warnings=0 --no-warn-ignored`, then `prettier --write` (ESLint auto-sorts imports and fixes lint issues; Prettier formats the result)
 - `*.{json,md,yml,yaml,mjs}` → `prettier --write`
+
+**Order matters: run `eslint --fix` before `prettier --write`.** `simple-import-sort` reorders import specifiers but does not normalize the whitespace around them (`import { test, expect }` becomes `import { expect,test }`), so it relies on a formatter running afterwards. If Prettier runs first, every commit that triggers a re-sort stores unformatted code and `format:check` fails in CI. The same order applies to any local script that runs `eslint --fix` together with `prettier --write` (e.g. `eslint . --fix && prettier --write .`) and to VS Code (`source.fixAll.eslint` in `codeActionsOnSave` runs before `formatOnSave`).
+
+**Why `--no-warn-ignored`:** lint-staged passes explicit file paths. ESLint warns when an explicitly passed file matches its `ignores`, and `--max-warnings=0` turns that warning into a failed commit.
 
 Also review ignored outputs so formatters and linters do not waste time on generated artifacts.
 
@@ -857,6 +864,12 @@ npm run tsc:check
 **Symptom:** Many import order errors after switching from a Prettier plugin.
 **Fix:** Run `npx eslint . --fix` once to normalize all imports, then commit.
 
+### `format:check` fails after `eslint --fix` or after a commit
+
+**Symptom:** Files touched by `eslint --fix` (or committed through lint-staged) fail `prettier --check`, often with imports like `import { expect,test } from "@playwright/test"`.
+**Cause:** `simple-import-sort` reorders specifiers without fixing spacing. Prettier ran before ESLint (or not at all) in lint-staged or a local fix script.
+**Fix:** Run ESLint first, then Prettier: put `eslint --fix` before `prettier --write` in lint-staged and in any local script that runs both. Repair the existing files with `npx eslint . --fix && npx prettier --write .`.
+
 ### `format:check` passes but `lint` fails on Prettier issues
 
 **Symptom:** TypeScript files have formatting issues caught by ESLint but not by `format:check`.
@@ -887,6 +900,7 @@ A task using this skill is complete when:
 - [ ] Import sorting is handled by ESLint, not Prettier plugins
 - [ ] `typescript` and Node requirements are documented in `engines`
 - [ ] Husky and `lint-staged` are aligned
+- [ ] Every fixing flow runs `eslint --fix` before `prettier --write` (lint-staged, local fix scripts, VS Code save actions)
 - [ ] CI runs the quality checks — as a `quality` job in the existing pipeline, or in `.github/workflows/quality.yml` only if no pipeline exists
 - [ ] `.vscode/settings.json` does not have `source.organizeImports` conflicting with ESLint import sorting
 - [ ] Docs (`README.md`) match the actual setup
