@@ -20,7 +20,38 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Static analysis gate: cheap and fast, so tests only run on code that passes it.
+  # All commands are non-mutating; they mirror the local scripts in package.json.
+  quality:
+    name: Lint, Format & Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run tsc:check
+
   test:
+    needs: quality
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # Exposes the "dev" environment's variables (vars.*) and secrets (secrets.*) to this job
