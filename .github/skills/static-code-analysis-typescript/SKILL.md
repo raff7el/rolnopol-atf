@@ -79,14 +79,13 @@ This example shows:
 - ESLint flat config
 - `typescript-eslint`
 - Playwright lint rules
-- Prettier integration inside ESLint for TypeScript
+- Prettier CLI validation kept separate from ESLint
 - Import sorting via `eslint-plugin-simple-import-sort`
 - Ignored generated folders
 
 ```js
 import pluginJs from "@eslint/js";
 import eslintPluginPlaywright from "eslint-plugin-playwright";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -132,14 +131,13 @@ export default [
      },
    },
  },
- eslintPluginPrettierRecommended,
 ];
 ```
 
 **Key design decisions:**
 
 - `simple-import-sort/imports` and `simple-import-sort/exports` enforce consistent import order as an ESLint rule, not a Prettier plugin
-- `eslintPluginPrettierRecommended` must be last — it disables formatting rules that conflict with Prettier and adds the Prettier rule
+- Prettier formatting checks run via `prettier --check`; ESLint focuses on code quality and import order
 - The `files: ['**/*.ts']` block scopes TypeScript rules to `.ts` files only
 - Playwright `globalAliases` tells the Playwright plugin that `setup` and `health` are valid test functions
 
@@ -174,8 +172,7 @@ This example mirrors the recommended architecture:
    "check": "npm run format && npm run lint && npm run tsc:check",
    "check:ci": "npm run format:check && npm run lint && npm run tsc:check",
    "format": "npx prettier --write .",
-   "format:check": "npm run format:check:non-ts",
-   "format:check:non-ts": "npx prettier . --check \"!**.ts\"",
+   "format:check": "npx prettier --check \"**/*.{json,md,mjs,yml,yaml}\"",
    "lint": "npx eslint . --max-warnings=0",
    "lint-staged": "npx lint-staged",
    "tsc:check": "npx tsc --noEmit --pretty --strict"
@@ -192,7 +189,6 @@ This example mirrors the recommended architecture:
    "eslint": "^10.0.3",
    "eslint-config-prettier": "^10.1.8",
    "eslint-plugin-playwright": "^2.10.1",
-   "eslint-plugin-prettier": "^5.5.5",
    "eslint-plugin-simple-import-sort": "^12.1.1",
    "globals": "^17.4.0",
    "husky": "^9.1.7",
@@ -238,7 +234,7 @@ tmp
 
 ```json
 {
- "singleQuote": true,
+ "singleQuote": false,
  "endOfLine": "auto",
  "tabWidth": 2,
  "semi": true
@@ -259,8 +255,7 @@ See the [Import Sorting](#import-sorting) section below for rationale.
    "moduleResolution": "bundler",
    "strict": true,
    "sourceMap": true,
-   "noEmit": true,
-   "baseUrl": "."
+   "noEmit": true
  }
 }
 ```
@@ -377,7 +372,7 @@ jobs:
    runs-on: ubuntu-latest
    strategy:
      matrix:
-       node-version: [22]
+       node-version: [20, 22, 24]
    steps:
      - uses: actions/checkout@v4
 
@@ -553,6 +548,8 @@ For TypeScript repositories, prefer these principles:
 - if `typescript-eslint` is installed, ensure versions are compatible with ESLint and TypeScript
 - if tooling requires newer Node versions, declare them in `package.json#engines`
 
+If a legacy `.eslintrc*` file is found, migrate it to `eslint.config.mjs` using flat config. Remove the legacy file and any `eslintConfig` key in `package.json`, then run `npx eslint . --max-warnings=0` to confirm the migration.
+
 Typical direct dev dependencies may include:
 
 - `eslint`
@@ -562,7 +559,6 @@ Typical direct dev dependencies may include:
 - `prettier`
 - `eslint-config-prettier`
 - `eslint-plugin-simple-import-sort`
-- optionally `eslint-plugin-prettier`
 - optionally repo-specific plugins such as `eslint-plugin-playwright`
 - `globals`
 - `husky`
@@ -640,7 +636,7 @@ For `tsconfig.json`, prefer:
 - `module: "ESNext"` when the project uses ESM `import`/`export` syntax (which is the default for modern TypeScript projects)
 - `moduleResolution: "bundler"` — **required** when `module` is `"ESNext"` and TypeScript does not emit code. Without this, TS falls back to `"classic"` resolution which cannot resolve `node_modules`
 - `noEmit: true` when TypeScript is used only for type checking
-- explicit `baseUrl` / `paths` only when justified
+- Add `paths` only if the same alias prefix (for example `@app/*`) is imported from 3 or more directories and the test runner resolves it. Otherwise omit `baseUrl` and `paths`.
 - alignment between runtime/module system and test/tooling needs
 
 **Common mistake:** Using `"module": "CommonJS"` with `"target": "ESNext"`. This is semantically inconsistent — the project writes ESM but tells TypeScript to resolve modules as CJS. While it works (because `noEmit` means no output), it limits TypeScript's understanding of ESM-specific features and defaults to the older `"node"` resolution algorithm.
@@ -669,7 +665,7 @@ Guidelines:
 
 - use `lint-staged` for fast local feedback
 - avoid running whole-repo ESLint in pre-commit if staged-only checks are enough
-- if full `tsc:check` is too slow for pre-commit, move it to `pre-push` or CI
+- If `npm run tsc:check` takes longer than 30 seconds on a typical developer machine, move it from pre-commit to pre-push.
 
 ### 9. Define CI quality gates
 
@@ -705,7 +701,7 @@ CI principles:
 - fail loudly on configuration drift
 - use `permissions: contents: read` for least-privilege
 - cache `npm` dependencies for speed
-- matrix test against the Node version declared in `engines.node`
+- matrix test against every major Node version declared in `engines.node`
 
 ### 10. Update documentation
 
@@ -817,7 +813,7 @@ npm install -D @playwright/test typescript
 
 # 2. Install static analysis tools
 npm install -D eslint @eslint/js typescript-eslint globals
-npm install -D prettier eslint-config-prettier eslint-plugin-prettier
+npm install -D prettier eslint-config-prettier
 npm install -D eslint-plugin-simple-import-sort
 npm install -D eslint-plugin-playwright
 npm install -D husky lint-staged
@@ -864,7 +860,7 @@ npm run tsc:check
 ### `format:check` passes but `lint` fails on Prettier issues
 
 **Symptom:** TypeScript files have formatting issues caught by ESLint but not by `format:check`.
-**Cause:** If using Model B (`eslint-plugin-prettier`), `format:check` only checks non-TS files. TS formatting is checked by ESLint.
+**Cause:** If using Model B (`eslint-plugin-prettier`) and `format:check` targets only non-TS globs, TS formatting is checked by ESLint.
 **Fix:** This is expected behavior in Model B. Run `npx eslint . --fix` to fix TS formatting.
 
 ### `tsc:check` fails but ESLint passes
