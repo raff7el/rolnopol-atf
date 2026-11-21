@@ -282,8 +282,6 @@ Using `"module": "CommonJS"` with `"target": "ESNext"` is a legacy pattern. It c
 
 If migrating from `CommonJS` to `ESNext`, the only required change is adding `"moduleResolution": "bundler"` alongside the module change.
 
-````
-
 ### Example VS Code settings (`.vscode/settings.json`)
 
 ```json
@@ -295,7 +293,7 @@ If migrating from `CommonJS` to `ESNext`, the only required change is adding `"m
    "editor.defaultFormatter": "esbenp.prettier-vscode"
  }
 }
-````
+```
 
 **Important:** Do NOT add `"source.organizeImports": "explicit"` to `codeActionsOnSave`.
 VS Code's built-in organize imports conflicts with ESLint-based import sorting (`eslint-plugin-simple-import-sort`), causing competing re-orderings on save. Let ESLint handle import order via `lint-staged` on commit and the VS Code ESLint extension in real time.
@@ -840,9 +838,9 @@ npx husky init
 #    - If .github/workflows/ already has a CI pipeline → add quality job there
 #    - If no pipeline exists → create .github/workflows/quality.yml
 
-# 5. Add scripts to package.json (see example above)
+# 6. Add scripts to package.json (see example above)
 
-# 6. Verify
+# 7. Verify
 npm run lint
 npm run format:check
 npm run tsc:check
@@ -893,7 +891,7 @@ A task using this skill is complete when:
 - [ ] Import sorting is handled by ESLint, not Prettier plugins
 - [ ] `typescript` and Node requirements are documented in `engines`
 - [ ] Husky and `lint-staged` are aligned
-- [ ] CI workflow exists at `.github/workflows/quality.yml`
+- [ ] CI runs the quality checks — as a `quality` job in the existing pipeline, or in `.github/workflows/quality.yml` only if no pipeline exists
 - [ ] `.vscode/settings.json` does not have `source.organizeImports` conflicting with ESLint import sorting
 - [ ] Docs (`README.md`) match the actual setup
 - [ ] Verification results are recorded (`lint`, `format:check`, `tsc:check` all pass)
