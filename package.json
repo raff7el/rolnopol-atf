@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
-    "test:report": "npx playwright show-report"
+    "test:report": "npx playwright show-report",
+    "tsc:check": "tsc --noEmit --pretty"
   },
   "repository": {
     "type": "git",
