@@ -1,6 +1,10 @@
 ---
 name: sync-test-plan
-description: Describe when to use this prompt
+description: Audit docs/test-plan.md against the implemented tests and, if asked, update its Automated coverage table.
 ---
 
-Review the TEST_PLAN and verify that it matches the current implemented tests.
+Use the `test-plan-traceability` skill in **Audit** mode: compare the test
+plan's scenario and Automated coverage tables with the tests under `tests/`
+and report every finding with its fix.
+
+Change files only if the user asks for a sync; then switch to **Sync** mode.

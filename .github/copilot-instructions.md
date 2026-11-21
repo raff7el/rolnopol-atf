@@ -26,9 +26,11 @@ Add `!` after the type or scope for breaking changes.
 
 ## Test Plan and Tagging System
 
-- Tag each new or updated Playwright test with the appropriate tag from the
-  [test plan](../docs/test-plan.md#test-approach).
-- Keep tag guidance synchronized between the test plan and this file.
+- Link each new or updated Playwright test to its scenario in the
+  [test plan](../docs/test-plan.md#test-scenarios) and tag it from the
+  scenario's Tags column.
+- Use the `test-plan-traceability` skill for scenario links, tags, and the
+  Automated coverage table; do not edit that table by hand.
 
 ## Test Structure (Arrange / Act / Assert)
 

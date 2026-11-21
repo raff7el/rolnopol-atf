@@ -1,0 +1,16 @@
+id: positive-trigger-003
+name: Unplanned behaviour
+description: A test for behaviour missing from the plan leads to a proposed scenario row, not a test.
+tags:
+  - positive-trigger
+inputs:
+  prompt: "Add a test that the profile page shows the user's last login time."
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: proposes-new-scenario
+    config:
+      contains:
+        - "scenario"
+        - "approv"

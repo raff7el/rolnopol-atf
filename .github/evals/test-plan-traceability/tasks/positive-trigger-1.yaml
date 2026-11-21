@@ -1,0 +1,16 @@
+id: positive-trigger-001
+name: Audit coverage table
+description: An audit request triggers the skill and reports stale coverage rows without editing files.
+tags:
+  - positive-trigger
+inputs:
+  prompt: "Is the Automated coverage table in docs/test-plan.md still accurate? Just report, don't change anything."
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: reports-coverage-findings
+    config:
+      contains:
+        - "coverage"
+        - "tests/"

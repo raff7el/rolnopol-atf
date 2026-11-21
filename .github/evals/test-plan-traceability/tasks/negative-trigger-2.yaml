@@ -1,0 +1,17 @@
+id: negative-trigger-002
+name: Locator question
+description: A locator question is about test code, not traceability.
+tags:
+  - negative-trigger
+inputs:
+  prompt: "What's a stable locator for the Save button on the Staff & Fields page?"
+expected:
+  should_trigger: false
+graders:
+  - type: text
+    name: omits-traceability-terms
+    config:
+      not_contains:
+        - "scenario ID"
+        - "Automated coverage"
+        - "test-plan.md"

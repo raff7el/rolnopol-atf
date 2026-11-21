@@ -1,0 +1,16 @@
+id: positive-trigger-002
+name: Tag for a planned scenario
+description: Choosing a tag for a new test uses the scenario's Tags column and the link comment convention.
+tags:
+  - positive-trigger
+inputs:
+  prompt: "I'm writing a Playwright test for logging out. Which scenario ID and tag should it have?"
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: uses-scenario-and-tag
+    config:
+      contains:
+        - "AUTH-08"
+        - "@ui"
