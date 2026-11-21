@@ -93,7 +93,6 @@ import tseslint from "typescript-eslint";
 
 export default [
   { ignores: ["package-lock.json", "playwright-report/**", "test-results/**"] },
-  { files: ["**/*.ts"] },
   {
     languageOptions: {
       globals: globals.node,
@@ -115,6 +114,7 @@ export default [
     },
   },
   {
+    files: ["**/*.ts"],
     rules: {
       "@typescript-eslint/explicit-function-return-type": "error",
     },
@@ -142,7 +142,7 @@ export default [
 - `simple-import-sort/imports` and `simple-import-sort/exports` enforce consistent import order as an ESLint rule, not a Prettier plugin
 - Prettier formatting checks run via `prettier --check` on all files, including `*.ts`; ESLint focuses on code quality and import order
 - `eslint-config-prettier` is the **last** entry. It only turns rules off, so anything listed after it (a plugin preset or a custom style rule) could re-enable a formatting rule that conflicts with Prettier. Import the `/flat` entry point for flat config.
-- The `files: ['**/*.ts']` block scopes TypeScript rules to `.ts` files only
+- `files: ["**/*.ts"]` sits on the same object as the TypeScript-only rule, so the rule applies to `.ts` files only. A config object that contains only `files` scopes nothing: it just adds those files to the set ESLint lints (typescript-eslint already includes `.ts`), and every other entry still applies to all files
 - Playwright `globalAliases` tells the Playwright plugin that `setup` and `health` are valid test functions
 
 **Adapting for non-Playwright repos:**
