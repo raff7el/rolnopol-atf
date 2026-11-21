@@ -1,15 +1,15 @@
 import { test, expect } from "@playwright/test";
-import { PAGE_URLS } from "../src/constants/pageurls";
-import { RegisterPage } from "../src/pages/register.page";
+import { PAGE_URLS } from "../../src/constants/pageurls";
+import { createUniqueEmail } from "../../src/factories/user.factory";
+import { RegisterPage } from "../../src/pages/register.page";
 
 test(
   "registers a new user and redirects to the login page",
   { tag: "@ui" },
   async ({ page }) => {
     // Arrange
-    test.setTimeout(20_000);
     const registerPage = new RegisterPage(page);
-    const email = `autotest_${Date.now()}@example.com`;
+    const email = createUniqueEmail();
 
     await registerPage.goto();
     await registerPage.fillForm({

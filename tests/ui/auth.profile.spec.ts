@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
-import { PAGE_URLS } from "../src/constants/pageurls";
-import { createUser } from "../src/factories/user.factory";
-import { LoginPage } from "../src/pages/login.page";
-import { ProfilePage } from "../src/pages/profile.page";
+import { PAGE_URLS } from "../../src/constants/pageurls";
+import { createUser } from "../../src/factories/user.factory";
+import { LoginPage } from "../../src/pages/login.page";
+import { ProfilePage } from "../../src/pages/profile.page";
 
-// FARM-06: emptyuser (TEST_USER_* in .env) has no farm data, so the profile page should load
+// FARM-06: emptyuser (TEST_EMPTY_USER_* in .env) has no farm data, so the profile page should load
 // successfully with all sections visible and no errors.
 test(
   "logs in as the empty user, displays profile sections, and logs out",
