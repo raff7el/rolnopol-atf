@@ -85,6 +85,7 @@ This example shows:
 
 ```js
 import pluginJs from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 import eslintPluginPlaywright from "eslint-plugin-playwright";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
@@ -131,6 +132,8 @@ export default [
       },
     },
   },
+  // Must stay last: turns off rules that conflict with Prettier.
+  eslintConfigPrettier,
 ];
 ```
 
@@ -138,6 +141,7 @@ export default [
 
 - `simple-import-sort/imports` and `simple-import-sort/exports` enforce consistent import order as an ESLint rule, not a Prettier plugin
 - Prettier formatting checks run via `prettier --check` on all files, including `*.ts`; ESLint focuses on code quality and import order
+- `eslint-config-prettier` is the **last** entry. It only turns rules off, so anything listed after it (a plugin preset or a custom style rule) could re-enable a formatting rule that conflicts with Prettier. Import the `/flat` entry point for flat config.
 - The `files: ['**/*.ts']` block scopes TypeScript rules to `.ts` files only
 - Playwright `globalAliases` tells the Playwright plugin that `setup` and `health` are valid test functions
 
