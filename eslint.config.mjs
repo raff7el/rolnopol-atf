@@ -1,8 +1,8 @@
 import pluginJs from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 import eslintPluginPlaywright from "eslint-plugin-playwright";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
-import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -46,7 +46,8 @@ export default defineConfig([
         {
           object: "process",
           property: "env",
-          message: "Read environment values through ENV from src/config/env.ts.",
+          message:
+            "Read environment values through ENV from src/config/env.ts.",
         },
       ],
     },

@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+
 import { STORAGE_STATE } from "./src/config/auth";
 // Loads .env and validates all required variables; throws before any test runs.
 import { ENV } from "./src/config/env";

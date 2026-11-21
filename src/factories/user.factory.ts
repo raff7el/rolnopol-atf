@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+
 import { ENV } from "../config/env";
 import { type User } from "../models/user.model";
 

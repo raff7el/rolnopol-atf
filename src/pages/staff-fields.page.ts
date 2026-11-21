@@ -1,4 +1,5 @@
 import { type Locator, type Page, type Response } from "@playwright/test";
+
 import { API_URLS } from "../config/urls";
 import { PAGE_URLS } from "../constants/pageurls";
 import { BasePage } from "./base.page";

@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+
 import { PAGE_URLS } from "../../src/constants/pageurls";
 import { createUser } from "../../src/factories/user.factory";
 import { LoginPage } from "../../src/pages/login.page";
