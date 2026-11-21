@@ -92,16 +92,19 @@ All automated tests run in Playwright with TypeScript, split into a fast smoke s
 
 ## Automated coverage
 
-6 of 46 scenarios are automated so far. One P1 `@smoke` scenario, SYS-01, is still missing even though smoke runs on every commit.
+6 of 46 scenarios are automated so far, and FARM-03 is partly covered. One P1 `@smoke` scenario, SYS-01, is still missing even though smoke runs on every commit.
 
-| ID      | Spec file                                 | Test                                                                           |
-| ------- | ----------------------------------------- | ------------------------------------------------------------------------------ |
-| SYS-02  | `tests/main.smoke.spec.ts`                | 5 page-load tests: home, login, registration, Swagger, documentation           |
-| AUTH-04 | `tests/auth.login.smoke.spec.ts`          | logs in as the demo user, sets auth cookies, and redirects to the profile page |
-| AUTH-01 | `tests/register.spec.ts`                  | registers a new user and redirects to the login page                           |
-| AUTH-14 | `tests/register.negative.spec.ts`         | rejects a display name with disallowed characters and sends no request         |
-| FARM-06 | `tests/auth.profile.spec.ts`              | logs in as the empty user, displays profile sections, and logs out             |
-| FARM-01 | `tests/session/demo.staff-fields.spec.ts` | creates a new field in the Staff & Fields view for a logged-in user            |
+| ID      | Spec file                                         | Test                                                                                                                         |
+| ------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| AUTH-01 | `tests/ui/register.spec.ts`                       | registers a new user and redirects to the login page                                                                         |
+| AUTH-04 | `tests/auth/demo-user.setup.ts`                   | logs in as the demo user, sets auth cookies, and saves the session                                                           |
+| AUTH-14 | `tests/ui/register.negative.spec.ts`              | rejects a display name with disallowed characters and sends no request                                                       |
+| FARM-01 | `tests/session/demo.staff-fields.spec.ts`         | creates a new field in the Staff & Fields view for a logged-in user                                                          |
+| FARM-03 | `tests/session/demo.staff-fields-animals.spec.ts` | creates a new animal group in the Staff & Fields view for a logged-in user — partial: does not assign the animals to a field |
+| FARM-06 | `tests/ui/auth.profile.spec.ts`                   | logs in as the empty user, displays profile sections, and logs out                                                           |
+| SYS-02  | `tests/smoke/main.smoke.spec.ts`                  | 5 page-load tests: home, login, registration, Swagger, documentation                                                         |
+
+Supporting test with no scenario of its own: `tests/session/demo.profile.spec.ts` checks that the demo session saved by AUTH-04 still works.
 
 ## Environment, data and criteria
 

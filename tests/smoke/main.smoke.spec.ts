@@ -6,6 +6,8 @@ import { LoginPage } from "../../src/pages/login.page";
 import { RegisterPage } from "../../src/pages/register.page";
 import { SwaggerPage } from "../../src/pages/swagger.page";
 
+// SYS-02: each key public page loads with the right title and main content.
+
 test(
   "displays the Rolnopol page title and welcome heading",
   { tag: "@smoke" },

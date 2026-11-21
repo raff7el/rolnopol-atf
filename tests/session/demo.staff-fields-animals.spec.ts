@@ -23,6 +23,8 @@ test.afterEach(async ({ page }) => {
   ).toBe(true);
 });
 
+// FARM-03 (partial): adds an animal group with type and amount, but does not
+// assign it to a field yet.
 test(
   "creates a new animal group in the Staff & Fields view for a logged-in user",
   { tag: "@ui" },

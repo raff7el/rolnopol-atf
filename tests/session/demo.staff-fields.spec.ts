@@ -23,6 +23,8 @@ test.afterEach(async ({ page }) => {
   ).toBe(true);
 });
 
+// FARM-01: the field is removed through the API after the test, so the demo
+// user's farm stays the same for other tests.
 test(
   "creates a new field in the Staff & Fields view for a logged-in user",
   { tag: "@ui" },
