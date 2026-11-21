@@ -70,348 +70,17 @@ A strong baseline should usually include:
 
 ## Example Configs
 
-Use these as practical baseline snippets for repositories similar to this one.
-
-### Example `eslint.config.mjs`
-
-This example shows:
-
-- ESLint flat config
-- `typescript-eslint`
-- Playwright lint rules
-- Prettier CLI validation kept separate from ESLint
-- Import sorting via `eslint-plugin-simple-import-sort`
-- Ignored generated folders
-
-```js
-import pluginJs from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier/flat";
-import eslintPluginPlaywright from "eslint-plugin-playwright";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
-import globals from "globals";
-import tseslint from "typescript-eslint";
-
-export default [
-  { ignores: ["package-lock.json", "playwright-report/**", "test-results/**"] },
-  {
-    languageOptions: {
-      globals: globals.node,
-      parserOptions: {
-        warnOnUnsupportedTypeScriptVersion: false,
-      },
-    },
-  },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-    },
-    rules: {
-      "no-console": "error",
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
-    },
-  },
-  {
-    files: ["**/*.ts"],
-    rules: {
-      "@typescript-eslint/explicit-function-return-type": "error",
-    },
-  },
-  eslintPluginPlaywright.configs["flat/recommended"],
-  {
-    rules: {
-      "playwright/no-nested-step": "off",
-    },
-    settings: {
-      playwright: {
-        globalAliases: {
-          test: ["setup", "health"],
-        },
-      },
-    },
-  },
-  // Must stay last: turns off rules that conflict with Prettier.
-  eslintConfigPrettier,
-];
-```
-
-**Key design decisions:**
-
-- `simple-import-sort/imports` and `simple-import-sort/exports` enforce consistent import order as an ESLint rule, not a Prettier plugin
-- Prettier formatting checks run via `prettier --check` on all files, including `*.ts`; ESLint focuses on code quality and import order
-- `eslint-config-prettier` is the **last** entry. It only turns rules off, so anything listed after it (a plugin preset or a custom style rule) could re-enable a formatting rule that conflicts with Prettier. Import the `/flat` entry point for flat config.
-- `files: ["**/*.ts"]` sits on the same object as the TypeScript-only rule, so the rule applies to `.ts` files only. A config object that contains only `files` scopes nothing: it just adds those files to the set ESLint lints (typescript-eslint already includes `.ts`), and every other entry still applies to all files
-- Playwright `globalAliases` tells the Playwright plugin that `setup` and `health` are valid test functions
-
-**Adapting for non-Playwright repos:**
-
-Remove the Playwright-specific blocks:
-
-```js
-// Remove these two blocks:
-eslintPluginPlaywright.configs['flat/recommended'],
-{
- rules: { 'playwright/no-nested-step': 'off' },
- settings: { playwright: { ... } },
-},
-```
-
-And remove `eslint-plugin-playwright` from `devDependencies`.
-
-### Example `package.json` quality section
-
-This example mirrors the recommended architecture:
-
-- Full-project lint and format
-- Non-mutating CI checks
-- Staged-file formatting/linting
-- Explicit Node engine
-- Direct `typescript` dependency
-
-```json
-{
-  "scripts": {
-    "check": "npm run format && npm run lint && npm run tsc:check",
-    "check:ci": "npm run format:check && npm run lint && npm run tsc:check",
-    "format": "npx prettier --write .",
-    "format:check": "npx prettier --check .",
-    "lint": "npx eslint . --max-warnings=0",
-    "lint-staged": "npx lint-staged",
-    "tsc:check": "npx tsc --noEmit --pretty --strict"
-  },
-  "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "npx eslint --fix --max-warnings=0 --no-warn-ignored",
-      "npx prettier --write"
-    ],
-    "*.{json,md,mjs,yml,yaml}": "npx prettier --write"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "eslint": "^10.0.3",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-playwright": "^2.10.1",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "globals": "^17.4.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "prettier": "3.8.1",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.1"
-  }
-}
-```
-
-**`format:check` must cover the same files as `format`.** In this setup (Model A) no ESLint rule checks formatting, so the Prettier CLI is the only formatting check for `*.ts`. A non-TS glob such as `"**/*.{json,md,mjs,yml,yaml}"` would leave TypeScript formatting unchecked in CI. Use a non-TS glob only with `eslint-plugin-prettier` (Model B), and then name the script `format:check:non-ts` so the split is visible.
-
-**Script naming conventions:**
-
-| Script         | Purpose                                 | Mutates files?  | Use in CI? |
-| -------------- | --------------------------------------- | --------------- | ---------- |
-| `check`        | Local aggregate: format + lint + tsc    | Yes (`--write`) | No         |
-| `check:ci`     | CI aggregate: format:check + lint + tsc | No              | Yes        |
-| `format`       | Apply Prettier formatting               | Yes             | No         |
-| `format:check` | Validate formatting                     | No              | Yes        |
-| `lint`         | Run ESLint (includes import sort)       | No              | Yes        |
-| `lint-staged`  | Staged-file checks                      | Yes (fix mode)  | No         |
-| `tsc:check`    | TypeScript type checking                | No              | Yes        |
-
-### Example Husky hook (`.husky/pre-commit`)
-
-```sh
-npm run lint-staged
-npm run tsc:check
-```
-
-### Example `.prettierignore`
-
-Use ignore patterns for generated and heavy output folders.
-
-```txt
-package-lock.json
-playwright-report
-test-results
-tmp
-```
-
-### Example `.prettierrc.json`
-
-```json
-{
-  "singleQuote": false,
-  "endOfLine": "auto",
-  "tabWidth": 2,
-  "semi": true
-}
-```
-
-**Important:** Import sorting is NOT configured in Prettier.
-Use `eslint-plugin-simple-import-sort` in ESLint instead.
-See the [Import Sorting](#import-sorting) section below for rationale.
-
-### Example `tsconfig.json`
-
-```json
-{
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "sourceMap": true,
-    "noEmit": true
-  }
-}
-```
-
-**Key design decisions:**
-
-- `module: "ESNext"` — aligns with ESM syntax used throughout TypeScript source files (`import`/`export`). Avoids the inconsistency of targeting modern JS with `target: "ESNext"` while using a legacy module system.
-- `moduleResolution: "bundler"` — required when `module` is `"ESNext"`. Without it, TypeScript falls back to `"classic"` resolution which does not understand `node_modules`. The `"bundler"` strategy is the correct choice when TypeScript does not emit code (e.g. `noEmit: true`) and files are processed by a bundler or test runner (Playwright uses ESBuild internally).
-- `noEmit: true` — TypeScript is used only for type checking, not code generation.
-- Path aliases (`paths`) are optional — only add them when justified by project structure. If used, ensure they are also supported by the test runner.
-
-**Why not `"module": "CommonJS"`?**
-
-Using `"module": "CommonJS"` with `"target": "ESNext"` is a legacy pattern. It causes TS to default to `moduleResolution: "node"` (Node.js CJS algorithm), which works but is semantically incorrect for projects that:
-
-- Use ESM `import`/`export` syntax exclusively
-- Never emit code (so the module format is irrelevant for output)
-- Are processed by modern tooling (ESBuild, Vite, Playwright)
-
-If migrating from `CommonJS` to `ESNext`, the only required change is adding `"moduleResolution": "bundler"` alongside the module change.
-
-### Example VS Code settings (`.vscode/settings.json`)
-
-```json
-{
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
-}
-```
-
-**Important:** Do NOT add `"source.organizeImports": "explicit"` to `codeActionsOnSave`.
-VS Code's built-in organize imports conflicts with ESLint-based import sorting (`eslint-plugin-simple-import-sort`), causing competing re-orderings on save. Let ESLint handle import order via `lint-staged` on commit and the VS Code ESLint extension in real time.
-
-### Example VS Code extensions (`.vscode/extensions.json`)
-
-Recommended extensions for this style of repo:
-
-```json
-{
-  "recommendations": [
-    "ms-playwright.playwright",
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "streetsidesoftware.code-spell-checker"
-  ]
-}
-```
-
-### Example CI workflow — integrated into existing pipeline (PREFERRED)
-
-When the repository already has a CI workflow (e.g. for Playwright tests), add a `quality` job to that workflow and make the test job depend on it:
-
-```yaml
-jobs:
-  quality:
-    name: Lint, Format & Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Check formatting
-        run: npm run format:check
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Type check
-        run: npm run tsc:check
-
-  test:
-    needs: quality
-    # ... existing test job configuration ...
-```
-
-**Key integration points:**
-
-- The `quality` job is added as a **separate job** within the same workflow
-- The existing test job gets `needs: quality` — tests only run after quality checks pass
-- Shared workflow triggers (`on:`) and `concurrency` settings apply to both jobs
-- No need for duplicate `permissions`, `on`, or `concurrency` blocks
-
-### Example CI workflow — standalone (FALLBACK)
-
-Use this only when the repository has **no existing CI workflow** to integrate into:
-
-```yaml
-name: Quality Gate
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-permissions:
-  contents: read
-
-jobs:
-  quality:
-    name: Lint, Format & Type Check
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20, 22, 24]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Check formatting
-        run: npm run format:check
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Type check
-        run: npm run tsc:check
-```
-
-**CI design principles:**
-
-- Every command is non-mutating — no `--write` or `--fix`
-- `npm ci` ensures reproducible installs
-- Steps are separate for clear failure diagnosis
-- Node version matches `engines.node` from `package.json`
-- `permissions: contents: read` follows least-privilege principle
-- **Prefer integrating into an existing pipeline** — only use a standalone workflow as a fallback
+Baseline configs for repositories similar to this one live in `references/`.
+Load only the file for the tool you are changing.
+
+| File                                                     | Contains                                                                                     | Load when                                       |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [references/eslint.md](references/eslint.md)             | `eslint.config.mjs`, design decisions, adapting for non-Playwright repos                     | Creating or changing the ESLint config          |
+| [references/package-json.md](references/package-json.md) | Scripts, `engines`, `lint-staged`, devDependencies, script naming table, `.husky/pre-commit` | Changing scripts, hooks, or dependencies        |
+| [references/prettier.md](references/prettier.md)         | `.prettierrc.json`, `.prettierignore`                                                        | Creating or changing Prettier config            |
+| [references/tsconfig.md](references/tsconfig.md)         | `tsconfig.json`, why `ESNext` + `bundler` instead of `CommonJS`                              | Creating or reviewing `tsconfig.json`           |
+| [references/vscode.md](references/vscode.md)             | `.vscode/settings.json`, `.vscode/extensions.json`                                           | Changing editor save actions or recommendations |
+| [references/ci-workflows.md](references/ci-workflows.md) | `quality` job for an existing pipeline, standalone fallback workflow                         | Adding or reviewing the CI quality gate         |
 
 ---
 
@@ -594,6 +263,8 @@ After migration, run `npx eslint . --fix` to normalize all imports, then verify 
 
 ### 5. Normalize script naming in `package.json`
 
+Example: [references/package-json.md](references/package-json.md) (scripts and the script naming table).
+
 Prefer predictable script names.
 
 Recommended naming:
@@ -639,6 +310,8 @@ Avoid leaving the repo in a state where it is unclear whether `*.ts` files are:
 
 ### 7. Validate TypeScript configuration
 
+Example: [references/tsconfig.md](references/tsconfig.md).
+
 For `tsconfig.json`, prefer:
 
 - `strict: true`
@@ -657,6 +330,8 @@ If the repo uses path aliases, confirm they are supported consistently by:
 - editor tooling
 
 ### 8. Set up Husky and lint-staged correctly
+
+Example: [references/package-json.md](references/package-json.md) (`lint-staged` and `.husky/pre-commit`).
 
 Recommended pattern:
 
@@ -682,6 +357,8 @@ Guidelines:
 
 ### 9. Define CI quality gates
 
+Example: [references/ci-workflows.md](references/ci-workflows.md).
+
 A minimal CI quality job should:
 
 1. Install dependencies reproducibly (`npm ci`)
@@ -697,7 +374,7 @@ Follow this procedure:
 
 1. **Search for existing workflows** — look in `.github/workflows/` for any existing CI pipeline (e.g. `playwright-e2e-tests.yml`, `ci.yml`, `test.yml`, `build.yml`, etc.)
 2. **If a main pipeline exists** — add a `quality` job to that workflow. This keeps all CI checks in one place, avoids duplicated triggers, and makes the pipeline status easier to track in pull requests. The quality job should run **before** the test job using `needs: quality` dependency, so tests only run after code quality checks pass.
-3. **Only if NO existing pipeline is found** — create a new workflow at `.github/workflows/quality.yml` using the example in this skill.
+3. **Only if NO existing pipeline is found** — create a new workflow at `.github/workflows/quality.yml` using the standalone example in [references/ci-workflows.md](references/ci-workflows.md).
 
 **Why integrate rather than separate?**
 
@@ -834,7 +511,7 @@ npm install -D husky lint-staged
 # 3. Initialize Husky
 npx husky init
 
-# 4. Create config files using the examples in this skill:
+# 4. Create config files using the examples in references/:
 # - eslint.config.mjs
 # - .prettierrc.json
 # - .prettierignore
@@ -847,7 +524,7 @@ npx husky init
 #    - If .github/workflows/ already has a CI pipeline → add quality job there
 #    - If no pipeline exists → create .github/workflows/quality.yml
 
-# 6. Add scripts to package.json (see example above)
+# 6. Add scripts to package.json (see references/package-json.md)
 
 # 7. Verify
 npm run lint
