@@ -1,7 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { FarmApi } from "../../src/api/farm.api";
 import { PAGE_URLS } from "../../src/constants/pageurls";
-import { type FieldData, StaffFieldsPage } from "../../src/pages/staff-fields.page";
+import {
+  type FieldData,
+  StaffFieldsPage,
+} from "../../src/pages/staff-fields.page";
 
 // Runs in the `demo-user` project, which starts already logged in as the demo
 // user with the session saved by tests/auth/demo-user.setup.ts.
@@ -58,6 +61,8 @@ test(
     const createdField = staffFieldsPage.fieldCard(body.data.id);
     await expect(createdField).toBeVisible();
     await expect(createdField).toContainText(field.name);
-    await expect(staffFieldsPage.fieldCardArea(body.data.id)).toHaveText(`${field.area} ha`);
+    await expect(staffFieldsPage.fieldCardArea(body.data.id)).toHaveText(
+      `${field.area} ha`,
+    );
   },
 );

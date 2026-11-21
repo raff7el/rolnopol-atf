@@ -60,7 +60,9 @@ export class StaffFieldsPage extends BasePage {
     this.addFieldModal = page.locator("#addFieldModal");
     this.fieldNameInput = this.addFieldModal.getByLabel("Field Name");
     this.fieldAreaInput = this.addFieldModal.getByLabel("Area (ha)");
-    this.fieldDistrictSelect = this.addFieldModal.getByLabel("District (optional)");
+    this.fieldDistrictSelect = this.addFieldModal.getByLabel(
+      "District (optional)",
+    );
     this.addFieldSubmitButton = this.addFieldModal.getByRole("button", {
       name: "Add Field",
     });
@@ -93,7 +95,8 @@ export class StaffFieldsPage extends BasePage {
   /** Resolves with the response of the "add field" request. Not awaited here. */
   waitForAddFieldResponse(): Promise<Response> {
     return this.page.waitForResponse(
-      (r) => r.url().endsWith(API_URLS.fields) && r.request().method() === "POST",
+      (r) =>
+        r.url().endsWith(API_URLS.fields) && r.request().method() === "POST",
     );
   }
 
@@ -128,7 +131,8 @@ export class StaffFieldsPage extends BasePage {
   /** Resolves with the response of the "add animal" request. Not awaited here. */
   waitForAddAnimalResponse(): Promise<Response> {
     return this.page.waitForResponse(
-      (r) => r.url().endsWith(API_URLS.animals) && r.request().method() === "POST",
+      (r) =>
+        r.url().endsWith(API_URLS.animals) && r.request().method() === "POST",
     );
   }
 
@@ -138,7 +142,8 @@ export class StaffFieldsPage extends BasePage {
    */
   waitForAnimalsListResponse(): Promise<Response> {
     return this.page.waitForResponse(
-      (r) => r.url().endsWith(API_URLS.animals) && r.request().method() === "GET",
+      (r) =>
+        r.url().endsWith(API_URLS.animals) && r.request().method() === "GET",
     );
   }
 

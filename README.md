@@ -20,12 +20,12 @@ npm run test:report     # raport HTML
 
 ## Projekty Playwright
 
-| Projekt       | Katalog          | Opis                                                                                       |
-| ------------- | ---------------- | ------------------------------------------------------------------------------------------ |
-| `smoke-tests` | `tests/smoke/`   | Szybki test, czy aplikacja działa; bez logowania                                           |
-| `setup`       | `tests/auth/`    | Logowanie DEMO_USER (AUTH-04), zapis sesji do `playwright/.auth/user.json`                 |
-| `demo-user`   | `tests/session/` | Testy zalogowanego DEMO_USER; zależy od `setup`                                            |
-| `ui`          | `tests/ui/`      | Scenariusze UI startujące bez sesji (rejestracja, logowanie innych użytkowników)           |
+| Projekt       | Katalog          | Opis                                                                             |
+| ------------- | ---------------- | -------------------------------------------------------------------------------- |
+| `smoke-tests` | `tests/smoke/`   | Szybki test, czy aplikacja działa; bez logowania                                 |
+| `setup`       | `tests/auth/`    | Logowanie DEMO_USER (AUTH-04), zapis sesji do `playwright/.auth/user.json`       |
+| `demo-user`   | `tests/session/` | Testy zalogowanego DEMO_USER; zależy od `setup`                                  |
+| `ui`          | `tests/ui/`      | Scenariusze UI startujące bez sesji (rejestracja, logowanie innych użytkowników) |
 
 ```sh
 npx playwright test --project=smoke-tests   # tylko smoke

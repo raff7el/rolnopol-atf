@@ -38,7 +38,9 @@ test(
     await expect(registerPage.displayNameInput).toHaveValue(invalidDisplayName);
 
     // Only the invalid field is flagged
-    await expect(registerPage.fieldError(registerPage.emailInput)).toHaveCount(0);
+    await expect(registerPage.fieldError(registerPage.emailInput)).toHaveCount(
+      0,
+    );
     await expect(
       registerPage.fieldError(registerPage.passwordInput),
     ).toHaveCount(0);
@@ -46,7 +48,9 @@ test(
     // Validation runs before the request is built, so once the error shows,
     // a request would already have been sent if validation had failed.
     expect(registerRequests).toHaveLength(0);
-    await expect(registerPage.notification("Registration successful!")).toHaveCount(0);
+    await expect(
+      registerPage.notification("Registration successful!"),
+    ).toHaveCount(0);
     await expect(page).toHaveURL(PAGE_URLS.register);
   },
 );

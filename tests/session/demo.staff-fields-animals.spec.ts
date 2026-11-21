@@ -1,7 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { FarmApi } from "../../src/api/farm.api";
 import { PAGE_URLS } from "../../src/constants/pageurls";
-import { type AnimalData, StaffFieldsPage } from "../../src/pages/staff-fields.page";
+import {
+  type AnimalData,
+  StaffFieldsPage,
+} from "../../src/pages/staff-fields.page";
 
 // Runs in the `demo-user` project, which starts already logged in as the demo
 // user with the session saved by tests/auth/demo-user.setup.ts.
@@ -38,7 +41,8 @@ test(
     await staffFieldsPage.fillAddAnimalForm(animal);
 
     const addAnimalResponsePromise = staffFieldsPage.waitForAddAnimalResponse();
-    const reloadAnimalsResponsePromise = staffFieldsPage.waitForAnimalsListResponse();
+    const reloadAnimalsResponsePromise =
+      staffFieldsPage.waitForAnimalsListResponse();
     await staffFieldsPage.submitAddAnimalForm();
 
     // Assert
@@ -48,7 +52,10 @@ test(
     const body = await addAnimalResponse.json();
     createdAnimalId = body.data?.id;
     expect(body.success).toBe(true);
-    expect(body.data).toMatchObject({ type: animal.type, amount: animal.amount });
+    expect(body.data).toMatchObject({
+      type: animal.type,
+      amount: animal.amount,
+    });
 
     await expect(staffFieldsPage.addAnimalModal).toBeHidden();
 
@@ -57,6 +64,8 @@ test(
     const createdAnimal = staffFieldsPage.animalCard(body.data.id);
     await expect(createdAnimal).toBeVisible();
     await expect(createdAnimal).toContainText(animal.type);
-    await expect(staffFieldsPage.animalCardAmount(body.data.id)).toHaveText(String(animal.amount));
+    await expect(staffFieldsPage.animalCardAmount(body.data.id)).toHaveText(
+      String(animal.amount),
+    );
   },
 );

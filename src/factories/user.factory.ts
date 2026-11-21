@@ -21,7 +21,10 @@ export function createUniqueEmail(): string {
  * Builds a `User` using the given seeded account; pass `overrides` to replace
  * any of its default values.
  */
-export function createUser(kind: UserKind = "empty", overrides: Partial<User> = {}): User {
+export function createUser(
+  kind: UserKind = "empty",
+  overrides: Partial<User> = {},
+): User {
   const user = ENV.users[kind];
   return {
     email: overrides.email ?? user.email,

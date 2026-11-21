@@ -91,46 +91,46 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default [
- { ignores: ["package-lock.json", "playwright-report/**", "test-results/**"] },
- { files: ["**/*.ts"] },
- {
-   languageOptions: {
-     globals: globals.node,
-     parserOptions: {
-       warnOnUnsupportedTypeScriptVersion: false,
-     },
-   },
- },
- pluginJs.configs.recommended,
- ...tseslint.configs.recommended,
- {
-   plugins: {
-     "simple-import-sort": simpleImportSort,
-   },
-   rules: {
-     "no-console": "error",
-     "simple-import-sort/imports": "error",
-     "simple-import-sort/exports": "error",
-   },
- },
- {
-   rules: {
-     "@typescript-eslint/explicit-function-return-type": "error",
-   },
- },
- eslintPluginPlaywright.configs["flat/recommended"],
- {
-   rules: {
-     "playwright/no-nested-step": "off",
-   },
-   settings: {
-     playwright: {
-       globalAliases: {
-         test: ["setup", "health"],
-       },
-     },
-   },
- },
+  { ignores: ["package-lock.json", "playwright-report/**", "test-results/**"] },
+  { files: ["**/*.ts"] },
+  {
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        warnOnUnsupportedTypeScriptVersion: false,
+      },
+    },
+  },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    plugins: {
+      "simple-import-sort": simpleImportSort,
+    },
+    rules: {
+      "no-console": "error",
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+    },
+  },
+  {
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "error",
+    },
+  },
+  eslintPluginPlaywright.configs["flat/recommended"],
+  {
+    rules: {
+      "playwright/no-nested-step": "off",
+    },
+    settings: {
+      playwright: {
+        globalAliases: {
+          test: ["setup", "health"],
+        },
+      },
+    },
+  },
 ];
 ```
 
@@ -168,35 +168,35 @@ This example mirrors the recommended architecture:
 
 ```json
 {
- "scripts": {
-   "check": "npm run format && npm run lint && npm run tsc:check",
-   "check:ci": "npm run format:check && npm run lint && npm run tsc:check",
-   "format": "npx prettier --write .",
-   "format:check": "npx prettier --check \"**/*.{json,md,mjs,yml,yaml}\"",
-   "lint": "npx eslint . --max-warnings=0",
-   "lint-staged": "npx lint-staged",
-   "tsc:check": "npx tsc --noEmit --pretty --strict"
- },
- "engines": {
-   "node": "^20.19.0 || ^22.13.0 || >=24"
- },
- "lint-staged": {
-   "*.ts": ["npx prettier --write", "npx eslint --fix --max-warnings=0"],
-   "*.{json,md,mjs,yml,yaml}": "npx prettier --write"
- },
- "devDependencies": {
-   "@eslint/js": "^10.0.1",
-   "eslint": "^10.0.3",
-   "eslint-config-prettier": "^10.1.8",
-   "eslint-plugin-playwright": "^2.10.1",
-   "eslint-plugin-simple-import-sort": "^12.1.1",
-   "globals": "^17.4.0",
-   "husky": "^9.1.7",
-   "lint-staged": "^16.4.0",
-   "prettier": "3.8.1",
-   "typescript": "^5.9.3",
-   "typescript-eslint": "^8.57.1"
- }
+  "scripts": {
+    "check": "npm run format && npm run lint && npm run tsc:check",
+    "check:ci": "npm run format:check && npm run lint && npm run tsc:check",
+    "format": "npx prettier --write .",
+    "format:check": "npx prettier --check \"**/*.{json,md,mjs,yml,yaml}\"",
+    "lint": "npx eslint . --max-warnings=0",
+    "lint-staged": "npx lint-staged",
+    "tsc:check": "npx tsc --noEmit --pretty --strict"
+  },
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "lint-staged": {
+    "*.ts": ["npx prettier --write", "npx eslint --fix --max-warnings=0"],
+    "*.{json,md,mjs,yml,yaml}": "npx prettier --write"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.10.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^17.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.1"
+  }
 }
 ```
 
@@ -234,10 +234,10 @@ tmp
 
 ```json
 {
- "singleQuote": false,
- "endOfLine": "auto",
- "tabWidth": 2,
- "semi": true
+  "singleQuote": false,
+  "endOfLine": "auto",
+  "tabWidth": 2,
+  "semi": true
 }
 ```
 
@@ -249,14 +249,14 @@ See the [Import Sorting](#import-sorting) section below for rationale.
 
 ```json
 {
- "compilerOptions": {
-   "target": "ESNext",
-   "module": "ESNext",
-   "moduleResolution": "bundler",
-   "strict": true,
-   "sourceMap": true,
-   "noEmit": true
- }
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "sourceMap": true,
+    "noEmit": true
+  }
 }
 ```
 
@@ -281,12 +281,12 @@ If migrating from `CommonJS` to `ESNext`, the only required change is adding `"m
 
 ```json
 {
- "editor.formatOnSave": true,
- "editor.defaultFormatter": "esbenp.prettier-vscode",
- "typescript.preferences.importModuleSpecifier": "non-relative",
- "[typescript]": {
-   "editor.defaultFormatter": "esbenp.prettier-vscode"
- }
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
 ```
 
@@ -299,12 +299,12 @@ Recommended extensions for this style of repo:
 
 ```json
 {
- "recommendations": [
-   "ms-playwright.playwright",
-   "esbenp.prettier-vscode",
-   "dbaeumer.vscode-eslint",
-   "streetsidesoftware.code-spell-checker"
- ]
+  "recommendations": [
+    "ms-playwright.playwright",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker"
+  ]
 }
 ```
 
@@ -314,33 +314,33 @@ When the repository already has a CI workflow (e.g. for Playwright tests), add a
 
 ```yaml
 jobs:
- quality:
-   name: Lint, Format & Type Check
-   runs-on: ubuntu-latest
-   steps:
-     - uses: actions/checkout@v4
+  quality:
+    name: Lint, Format & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-     - name: Setup Node.js
-       uses: actions/setup-node@v4
-       with:
-         node-version: "22"
-         cache: "npm"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
 
-     - name: Install dependencies
-       run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-     - name: Check formatting (non-TS)
-       run: npm run format:check
+      - name: Check formatting (non-TS)
+        run: npm run format:check
 
-     - name: Lint
-       run: npm run lint
+      - name: Lint
+        run: npm run lint
 
-     - name: Type check
-       run: npm run tsc:check
+      - name: Type check
+        run: npm run tsc:check
 
- test:
-   needs: quality
-   # ... existing test job configuration ...
+  test:
+    needs: quality
+    # ... existing test job configuration ...
 ```
 
 **Key integration points:**
@@ -358,41 +358,41 @@ Use this only when the repository has **no existing CI workflow** to integrate i
 name: Quality Gate
 
 on:
- push:
-   branches: [main]
- pull_request:
-   branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
- contents: read
+  contents: read
 
 jobs:
- quality:
-   name: Lint, Format & Type Check
-   runs-on: ubuntu-latest
-   strategy:
-     matrix:
-       node-version: [20, 22, 24]
-   steps:
-     - uses: actions/checkout@v4
+  quality:
+    name: Lint, Format & Type Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
 
-     - name: Use Node.js ${{ matrix.node-version }}
-       uses: actions/setup-node@v4
-       with:
-         node-version: ${{ matrix.node-version }}
-         cache: npm
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
 
-     - name: Install dependencies
-       run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-     - name: Check formatting (non-TS)
-       run: npm run format:check
+      - name: Check formatting (non-TS)
+        run: npm run format:check
 
-     - name: Lint
-       run: npm run lint
+      - name: Lint
+        run: npm run lint
 
-     - name: Type check
-       run: npm run tsc:check
+      - name: Type check
+        run: npm run tsc:check
 ```
 
 **CI design principles:**
@@ -472,8 +472,8 @@ Do you need import sorting?
 1. Uninstall: `npm uninstall @trivago/prettier-plugin-sort-imports`
 2. Install: `npm install -D eslint-plugin-simple-import-sort`
 3. Remove from `.prettierrc.json`:
-  - `"plugins": ["@trivago/prettier-plugin-sort-imports"]`
-  - `"importOrder"` / `"importOrderSeparation"` / `"importOrderSortSpecifiers"` / any `importOrder*` options
+   - `"plugins": ["@trivago/prettier-plugin-sort-imports"]`
+   - `"importOrder"` / `"importOrderSeparation"` / `"importOrderSortSpecifiers"` / any `importOrder*` options
 4. Add ESLint rules (see setup above)
 5. Remove `"source.organizeImports"` from `.vscode/settings.json`
 6. Run `npx eslint . --fix` to re-sort all imports
@@ -602,8 +602,8 @@ Guidelines:
 - commands used in CI should not mutate files
 - provide both `check` (local, with `--write`) and `check:ci` (CI, with `--check`)
 - if the repo intentionally splits non-TS and TS formatting, make that explicit with names such as:
- - `format:check`
- - `format:check:non-ts`
+- `format:check`
+- `format:check:non-ts`
 
 ### 6. Decide how formatting should work
 

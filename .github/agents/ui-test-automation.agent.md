@@ -1,7 +1,18 @@
 ---
-title: 'UI Test Automation'
+title: "UI Test Automation"
 description: This custom agent creates and maintains Playwright tests for UI automation.
-tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'web', 'playwright/*', 'todo']
+tools:
+  [
+    "vscode",
+    "execute",
+    "read",
+    "agent",
+    "edit",
+    "search",
+    "web",
+    "playwright/*",
+    "todo",
+  ]
 name: ui-test-automation
 ---
 
