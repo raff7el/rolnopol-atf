@@ -1,0 +1,13 @@
+# Prettier also honors .gitignore; these are listed explicitly for clarity.
+package-lock.json
+
+# Generated Playwright output
+playwright-report
+test-results
+blob-report
+playwright/.cache
+playwright/.auth
+
+# Tool/agent scratch output
+.playwright-mcp
+.ai-temp
