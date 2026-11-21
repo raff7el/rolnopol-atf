@@ -1,19 +1,18 @@
 id: positive-trigger-002
-name: Positive Trigger 2
-description: Auto-generated positive-trigger task.
+name: CI gate in existing pipeline
+description: The quality gate goes into the existing workflow as a quality job that the tests depend on.
 tags:
   - positive-trigger
 inputs:
-  prompt: "I need assistance with static code analysis typescript-related work"
+  prompt: "Add a CI quality gate for formatting, linting and type checking. We already run Playwright tests in .github/workflows/playwright-tests.yml."
 expected:
   should_trigger: true
 graders:
   - type: text
-    name: contains-keywords
+    name: integrates-quality-job
     config:
       contains:
-        - "analysis"
-        - "code"
-        - "static"
-        - "typescript"
-
+        - "playwright-tests.yml"
+        - "needs: quality"
+        - "format:check"
+        - "tsc:check"

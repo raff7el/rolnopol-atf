@@ -1,0 +1,17 @@
+id: positive-trigger-005
+name: tsconfig module setting
+description: A CommonJS module with an ESNext target is replaced by ESNext with bundler resolution.
+tags:
+  - positive-trigger
+inputs:
+  prompt: 'Our tsconfig.json has "target": "ESNext" and "module": "CommonJS" in a Playwright project with noEmit. Is that right?'
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: recommends-esnext-bundler
+    config:
+      contains:
+        - "ESNext"
+        - "moduleResolution"
+        - "bundler"

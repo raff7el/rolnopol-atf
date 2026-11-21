@@ -1,0 +1,17 @@
+id: positive-trigger-004
+name: Non-mutating CI script
+description: CI gets a separate non-mutating check:ci aggregate next to the local check script.
+tags:
+  - positive-trigger
+inputs:
+  prompt: "Our package.json has a `check` script that runs prettier --write, eslint --fix and tsc. Can CI just run `npm run check`?"
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: proposes-check-ci
+    config:
+      contains:
+        - "check:ci"
+        - "format:check"
+        - "mutat"

@@ -10,19 +10,21 @@ Page Objects describe **what is on a page and what a user can do there**. Tests 
 2. **All verifications live in test files** (`tests/**/*.spec.ts`, `tests/auth/*.setup.ts`), inside the `// Assert` block.
 3. **Return what the test needs to check.** Expose a `Locator`, a value, or a `Promise<Response>` and let the test assert on it.
 
+> Enforced by ESLint: importing `expect` from `@playwright/test` in `src/pages/**` fails `npm run lint`.
+
 ### Structure
 
-| Item         | Convention                                                                |
-| ------------ | ------------------------------------------------------------------------- |
-| Location     | `src/pages/<name>.page.ts`                                                |
-| Class name   | `<Name>Page`, e.g. `RegisterPage`                                         |
-| Base class   | Extends `BasePage` (`src/pages/base.page.ts`), which holds shared logic   |
-| Constructor  | Takes `page: Page`, calls `super(page)`; defines all static locators      |
-| Page URL     | `readonly url = PAGE_URLS.<name>`; navigate with the inherited `goto()`   |
-| Locators     | `readonly` fields; prefer `getByTestId` / `getByRole` over CSS selectors  |
-| Dynamic ones | Methods that return a `Locator`, e.g. `notification(message)`             |
-| Actions      | `async` methods named after user intent (`fillForm`, `submit`)            |
-| Input data   | Typed object parameter (e.g. `RegistrationData`) instead of many args     |
+| Item         | Convention                                                               |
+| ------------ | ------------------------------------------------------------------------ |
+| Location     | `src/pages/<name>.page.ts`                                               |
+| Class name   | `<Name>Page`, e.g. `RegisterPage`                                        |
+| Base class   | Extends `BasePage` (`src/pages/base.page.ts`), which holds shared logic  |
+| Constructor  | Takes `page: Page`, calls `super(page)`; defines all static locators     |
+| Page URL     | `readonly url = PAGE_URLS.<name>`; navigate with the inherited `goto()`  |
+| Locators     | `readonly` fields; prefer `getByTestId` / `getByRole` over CSS selectors |
+| Dynamic ones | Methods that return a `Locator`, e.g. `notification(message)`            |
+| Actions      | `async` methods named after user intent (`fillForm`, `submit`)           |
+| Input data   | Typed object parameter (e.g. `RegistrationData`) instead of many args    |
 
 ### Good practices
 
@@ -67,12 +69,12 @@ Every application path is defined **once** and imported wherever it is needed. N
 
 ### Structure
 
-| Item       | Convention                                                                 |
-| ---------- | -------------------------------------------------------------------------- |
-| Map        | Plain object exported as `UPPER_SNAKE_CASE`, declared `as const`           |
-| Keys       | `camelCase`, named after the page or endpoint (`register`, `login`)        |
-| Values     | Path starting with `/`, e.g. `"/register.html"`, `"/api/v1/register"`      |
-| Value type | Export a union type of the values (`PageUrl`, `ApiUrl`) for typed params   |
+| Item       | Convention                                                               |
+| ---------- | ------------------------------------------------------------------------ |
+| Map        | Plain object exported as `UPPER_SNAKE_CASE`, declared `as const`         |
+| Keys       | `camelCase`, named after the page or endpoint (`register`, `login`)      |
+| Values     | Path starting with `/`, e.g. `"/register.html"`, `"/api/v1/register"`    |
+| Value type | Export a union type of the values (`PageUrl`, `ApiUrl`) for typed params |
 
 ### Example
 
@@ -83,7 +85,8 @@ export class RegisterPage extends BasePage {
 
   waitForRegisterResponse(): Promise<Response> {
     return this.page.waitForResponse(
-      (r) => r.url().endsWith(API_URLS.register) && r.request().method() === "POST",
+      (r) =>
+        r.url().endsWith(API_URLS.register) && r.request().method() === "POST",
     );
   }
 }

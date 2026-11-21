@@ -1,4 +1,5 @@
-import { test as setup, expect } from "@playwright/test";
+import { expect, test as setup } from "@playwright/test";
+
 import { STORAGE_STATE } from "../../src/config/auth";
 import { PAGE_URLS } from "../../src/constants/pageurls";
 import { createUser } from "../../src/factories/user.factory";

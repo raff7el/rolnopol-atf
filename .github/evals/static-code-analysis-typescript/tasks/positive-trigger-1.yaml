@@ -1,19 +1,17 @@
 id: positive-trigger-001
-name: Positive Trigger 1
-description: Auto-generated positive-trigger task.
+name: lint-staged order
+description: A format:check failure after commits is fixed by running eslint --fix before prettier --write.
 tags:
   - positive-trigger
 inputs:
-  prompt: "Use static-code-analysis-typescript to help me complete this task"
+  prompt: "Our lint-staged runs prettier --write and then eslint --fix on *.ts. After commits, CI format:check fails on imports like `import { expect,test }`. Fix it."
 expected:
   should_trigger: true
 graders:
   - type: text
-    name: contains-keywords
+    name: eslint-before-prettier
     config:
       contains:
-        - "analysis"
-        - "code"
-        - "static"
-        - "typescript"
-
+        - "eslint --fix"
+        - "prettier --write"
+        - "before"

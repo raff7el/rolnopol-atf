@@ -1,0 +1,17 @@
+id: positive-trigger-003
+name: Migrate from trivago import sorting
+description: Import sorting moves from the trivago Prettier plugin to eslint-plugin-simple-import-sort.
+tags:
+  - positive-trigger
+inputs:
+  prompt: "We sort imports with @trivago/prettier-plugin-sort-imports. Should we keep it, and if not, how do we move off it?"
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: migrates-to-eslint-sorting
+    config:
+      contains:
+        - "eslint-plugin-simple-import-sort"
+        - "importOrder"
+        - "eslint . --fix"
